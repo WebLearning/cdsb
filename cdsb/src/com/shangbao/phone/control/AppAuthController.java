@@ -283,9 +283,9 @@ public class AppAuthController {
 						appResponseModel.setResultMsg("成功");
 					}
 				}else{
-					user.setPasswd(passwdModel.getNewPasswd());
-					if(userIdentifyService.updateUser(user)){
-						userServiceImp.updatePasswd(user, user.getPasswd(), passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null));
+					if(userServiceImp.updatePasswd(user, user.getPasswd(), passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null))){
+						user.setPasswd(passwdModel.getNewPasswd());
+						userIdentifyService.updateUser(user);
 						appResponseModel.setResultCode(1);
 						appResponseModel.setResultMsg("成功");
 					}else{

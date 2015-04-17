@@ -16,7 +16,7 @@ function readAndZanCtrl($scope, $http) {
 	}
 	console.log(articleID);
 	// var articleID = 306;
-	var basic = oldUrl.substring(0, oldUrl.lastIndexOf("01/app") + 7);
+	var basic = oldUrl.substring(0, oldUrl.lastIndexOf("sb/app") + 7);
 	console.log(basic);
 
 	var url_zan_load = basic + "js/getlike/" + articleID;
@@ -25,7 +25,7 @@ function readAndZanCtrl($scope, $http) {
 	var url_read_load = basic + "js/getclick/" + articleID;
 	var url_read_add = basic + "js/addclick/" + articleID;
 
-	var pictureBasic = oldUrl.substring(0, oldUrl.lastIndexOf("01/app")+3);
+	var pictureBasic = oldUrl.substring(0, oldUrl.lastIndexOf("sb/app")+3);
 	$scope.pictureUrl = pictureBasic + "WEB-SRC/src/img/zan.png";
 
 	var cookieName_zan = getCookie(articleID + "zan");
