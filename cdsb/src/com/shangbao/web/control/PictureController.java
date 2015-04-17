@@ -61,14 +61,17 @@ public class PictureController {
 	 */
 	@RequestMapping(value="/newPicture", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void addPicture(@RequestBody Article article){
+	@ResponseBody
+	public Article addPicture(@RequestBody Article article){
 		article.setState(ArticleState.Temp);//状态设置为暂存
 		article.setTag(true);//设置为图片新闻
 		String message = getLog("创建");
 		if(message != null){
 			article.getLogs().add(message);
 		}
-		this.pictureServiceImp.add(article);
+		Article temp = new Article();
+		temp.setId(this.pictureServiceImp.addGetId(article));
+		return temp;
 	}
 	
 	/**
@@ -78,7 +81,8 @@ public class PictureController {
 	 */
 	@RequestMapping(value="/newPicture/pend", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void addPicturePending(@RequestBody Article article){
+	@ResponseBody
+	public Article addPicturePending(@RequestBody Article article){
 		if(pendTagServiceImp.isTag("article")){
 			article.setState(ArticleState.Pending);//状态设置为待审
 			String message = getLog("新建并提交审核");
@@ -93,7 +97,9 @@ public class PictureController {
 			}
 		}
 		article.setTag(true);//设置为图片新闻
-		this.pictureServiceImp.add(article);
+		Article temp = new Article();
+		temp.setId(this.pictureServiceImp.addGetId(article));
+		return temp;
 	}
 	
 	/**

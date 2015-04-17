@@ -44,6 +44,7 @@ public class PictureServiceImp implements PictureService{
 		this.articleDaoImp.insert(article);
 	}
 	
+	@Override
 	public Long addGetId(Article article){
 		return articleDaoImp.insertAndGetId(article);
 	}
