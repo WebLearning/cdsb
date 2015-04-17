@@ -265,10 +265,10 @@
             </a>
             <ul class="dropdown-menu" role="menu" style="background-color:#30426A;">
                 <li role="presentation" class="sidebar-list">
-                    <a href="http://120.27.47.167:8080/shangbao02/WEB-SRC/src/show.html" target="_blank" ng-click="changeCurPage('投诉')">投诉列表<span class="menu-icon glyphicon glyphicon-tasks"></span></a>
+                    <a href="http://www.cdsb.mobi/shangbao02/WEB-SRC/src/show.html" target="_blank" ng-click="changeCurPage('投诉')">投诉列表<span class="menu-icon glyphicon glyphicon-tasks"></span></a>
                 </li>
                 <li role="presentation" class="sidebar-list">
-                    <a href="http://120.27.47.167:8080/shangbao02/WEB-SRC/src/tousu.html" target="_blank" ng-click="changeCurPage('投诉')">我要投诉<span class="menu-icon glyphicon glyphicon-edit"></span></a>
+                    <a href="http://www.cdsb.mobi/shangbao02/WEB-SRC/src/tousu.html" target="_blank" ng-click="changeCurPage('投诉')">我要投诉<span class="menu-icon glyphicon glyphicon-edit"></span></a>
                 </li>
             </ul>
         </li>
@@ -623,6 +623,20 @@
                 </div>
             </div>
 			<div role="tabpanel" class="tab-pane" id="newArticle" ng-controller="articleCtrl">
+            <div class="row">
+                <div class="col-md-2 col-md-offset-10">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_newArticle" ng-click="setYulanInNewArticle(newArticleData.id,newArticleData.content,newArticleData.outSideUrl)">预览</button>
+                </div>
+                <div class="modal fade" id="yulan_newArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <iframe id="iframe_yulanInNewAr" src="" height="800px" width="100%" style="margin-top: 15px" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
                         <form class="form-horizontal" role="form">
@@ -2885,6 +2899,20 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="newPicture" ng-controller="newPictureCtrl">
+            <div class="row">
+                <div class="col-md-2 col-md-offset-10">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_newPicture" ng-click="setYulanInNewPicture(newArticleData.id,newArticleData.content,newArticleData.outSideUrl)">预览</button>
+                </div>
+                <div class="modal fade" id="yulan_newPicture" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <iframe id="iframe_yulanInNewPic" src="" height="800px" width="100%" style="margin-top: 15px" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
                         <form class="form-horizontal" role="form">
