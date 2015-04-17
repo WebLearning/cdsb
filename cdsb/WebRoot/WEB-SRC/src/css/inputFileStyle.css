@@ -1,0 +1,19 @@
+
+.fileInputContainer{
+    height:128px;
+    width: 128px;
+    background: url(../img/addImgIcon.png);
+    position: relative;
+}
+
+.fileInput{
+    height:128px;
+    overflow: hidden;
+    /*font-size: 300px;*/
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    /*filter:alpha(opacity=0);*/
+    cursor: pointer;
+}

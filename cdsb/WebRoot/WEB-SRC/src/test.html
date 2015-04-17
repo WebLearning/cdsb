@@ -1,0 +1,52 @@
+
+<html lang="en" ng-app="myApp">
+<head>
+</head>
+
+<script type="text/javascript" src="js/jquery-1.11.0.js"></script>
+<script type="text/javascript" src="js/angular.js"></script> 
+
+
+<body ng-controller="myCtrl">
+
+	<button ng-click="testBtn()">test</button>
+	
+</body>
+
+
+<script type="text/javascript">
+
+console.log("enter here1");
+
+angular.module("myApp").controller("myCtrl", ["$scope","$http", function ($scope,$http) {
+	
+	console.log("enter here2");
+	
+	var url="http://user.itanzi.com/wap/api/v1/addUser/";
+	var timestamp=Math.round(new Date().getTime()/1000);
+	var json={
+			'phone' :123,
+            'avatar': "head/d",
+            'email': "qk@sin.com",
+            'sex': 1,
+            'birthday': timestamp,
+            'qq':66666,
+            'nickname':"xql",
+            'psw':"123"
+	};
+	var jsonString=JSON.stringify(json);
+
+	$scope.testBtn=function()
+	{
+		console.log("btn");
+		$http.post(url,jsonString).success(function(data){
+			console.log(data);
+		});
+	};
+	
+	
+}]);
+
+</script>
+
+</html>

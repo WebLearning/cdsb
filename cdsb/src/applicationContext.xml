@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/data/mongo   
+    http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<mongo:mongo id="mongo" host="127.0.0.1" port="27017" />
+
+	<bean id="userCredentials" class="org.springframework.data.authentication.UserCredentials">
+		<constructor-arg name="username" value="dslab" />
+		<constructor-arg name="password" value="dslab1010" />
+	</bean>
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg ref="mongo" />
+		<constructor-arg name="databaseName" value="mongo" />
+		<constructor-arg ref="userCredentials" />
+	</bean>
+
+	<!-- Remember-me configuration -->
+	<bean id="rememberMeServices"
+		class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+		<constructor-arg value="myRememberMeKey"></constructor-arg>
+		<constructor-arg ref="myUserDetailService"></constructor-arg>
+		<property name="alwaysRemember" value="true"></property>
+		<property name="tokenValiditySeconds" value="63158400"></property>
+	</bean>
+	<bean id="rememberMeAuthenticationProvider"
+		class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+		<constructor-arg value="myRememberMeKey"></constructor-arg>
+	</bean>
+	<bean id="rememberMeFilter"
+		class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<constructor-arg ref="authenticationManager"></constructor-arg>
+		<constructor-arg ref="rememberMeServices"></constructor-arg>
+	</bean>
+
+	<bean
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"
+		id="passwordEncoder" />
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.shangbao">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+	</context:component-scan>
+
+	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+		<property name="config">
+			<bean class="com.google.code.kaptcha.util.Config">
+				<!--通过构造函数注入属性值 -->
+				<constructor-arg type="java.util.Properties">
+					<props>
+						<!-- 验证码宽度 -->
+						<prop key="kaptcha.image.width">100</prop>
+						<!-- 验证码高度 -->
+						<prop key="kaptcha.image.height">30</prop>
+						<!-- 生成验证码内容范围 -->
+						<prop key="kaptcha.textproducer.char.string">0123456789</prop>
+						<!-- 验证码个数 -->
+						<prop key="kaptcha.textproducer.char.length">4</prop>
+						<!-- 是否有边框 -->
+						<prop key="kaptcha.border">yes</prop>
+						<!-- 边框颜色 -->
+						<prop key="kaptcha.border.color">105,179,90</prop>
+						<!-- 边框厚度 -->
+						<prop key="kaptcha.border.thickness">1</prop>
+						<!-- 验证码字体颜色 -->
+						<prop key="kaptcha.textproducer.font.color">blue</prop>
+						<!-- 验证码字体大小 -->
+						<prop key="kaptcha.textproducer.font.size">25</prop>
+						<!-- 验证码所属字体样式 -->
+						<prop key="kaptcha.textproducer.font.names">BKamrnBd</prop>
+						<!-- 干扰线颜色 -->
+						<prop key="kaptcha.noise.color">yellow</prop>
+						<!-- 验证码文本字符间距 -->
+						<prop key="kaptcha.textproducer.char.space">3</prop>
+					</props>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<!--Http client Factory -->
+	<bean id="httpClientFactory"
+		class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+		<property name="connectTimeout" value="100000" />
+		<property name="readTimeout" value="100000" />
+	</bean>
+
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<constructor-arg ref="httpClientFactory" />
+	</bean>
+
+	<!-- spring task -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="appService" method="refresh"
+			fixed-delay="10000" />
+		<task:scheduled ref="downLoadPicServiceImp" method="saveAsArticle"
+			cron="0 0 23 * * ?" />
+		<task:scheduled ref="kuaipaiPKTask" method="findTopArticle"
+			cron="0 55 23 * * ?" />
+		<task:scheduled ref="kuaipaiDSTask" method="method"
+			cron="0 05 00 * * ?"/>	
+	</task:scheduled-tasks>
+
+</beans>
