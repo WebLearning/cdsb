@@ -285,12 +285,16 @@ public class AppAuthController {
 				}else{
 					if(userServiceImp.updatePasswd(user, user.getPasswd(), passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null))){
 						user.setPasswd(passwdModel.getNewPasswd());
-						userIdentifyService.updateUser(user);
-						appResponseModel.setResultCode(1);
-						appResponseModel.setResultMsg("成功");
+						if(userIdentifyService.updateUser(user)){
+							appResponseModel.setResultCode(1);
+							appResponseModel.setResultMsg("成功");
+						}else{
+							appResponseModel.setResultCode(0);
+							appResponseModel.setResultMsg("服务器修改失败");
+						}
 					}else{
 						appResponseModel.setResultCode(0);
-						appResponseModel.setResultMsg("错误");
+						appResponseModel.setResultMsg("本地修改失败");
 					}
 				}
 			}else{
