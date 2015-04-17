@@ -217,7 +217,7 @@ angular.module("Dashboard").controller("newPictureCtrl", ["$scope","$http", func
                 if($scope.newArticleData.id==null||$scope.newArticleData.id==""){
                     $http.post(url,jsonString).success(function(){
                         $scope.clearArticle();
-                        alert("提交成功！");
+                        alert("发布成功！");
                         $scope.closeOver();
                     });
                 }else{
@@ -226,7 +226,7 @@ angular.module("Dashboard").controller("newPictureCtrl", ["$scope","$http", func
                         if($scope.saveStateInDraft1=="true"){
                             $http.put(url).success(function(){
                                 $scope.clearArticle();
-                                alert("提交成功");
+                                alert("发布成功！");
                                 $scope.closeOver();
                             });
                         }
@@ -247,7 +247,7 @@ angular.module("Dashboard").controller("newPictureCtrl", ["$scope","$http", func
                     var jsonString1=JSON.stringify($scope.newArticleData);
                     if($scope.newArticleData.id==null||$scope.newArticleData.id==""){
                         $http.post(url,jsonString1).success(function(){
-                            alert("提交审核成功！");
+                            alert("发布成功！");
                             $scope.clearArticle();
                             $scope.closeOver();
                         });
@@ -257,7 +257,7 @@ angular.module("Dashboard").controller("newPictureCtrl", ["$scope","$http", func
                             if($scope.saveStateInDraft1=="true"){
                                 $http.put(url).success(function(){
                                     $scope.clearArticle();
-                                    alert("提交成功");
+                                    alert("发布成功！");
                                     $scope.closeOver();
                                 });
                             }
