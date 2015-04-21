@@ -361,17 +361,21 @@ angular.module("Dashboard").controller("articleCtrl", ["$scope","$http", functio
     $scope.setYulanInNewArticle=function(id,content,outSideUrl){
         console.log(id);
         console.log($scope.newArticleData.id);
-        if((content=="")&&(outSideUrl=="")){
-            alert("内容为空，不可预览！");
-            var iFrameElem1 = document.getElementById('iframe_yulanInNewAr');
-            iFrameElem1.src="";
-            $('#yulan_newArticle').modal('toggle');
-        }else if(outSideUrl!=""){
-            var iFrameElem2 = document.getElementById('iframe_yulanInNewAr');
-            iFrameElem2.src=outSideUrl;
+        if(id==null||id==""){
+            alert("请先保存，否则不可预览！");
         }else{
-            var iFrameElem = document.getElementById('iframe_yulanInNewAr');
-            iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
+            if((content=="")&&(outSideUrl=="")){
+                alert("内容为空，不可预览！");
+                var iFrameElem1 = document.getElementById('iframe_yulanInNewAr');
+                iFrameElem1.src="";
+                $('#yulan_newArticle').modal('toggle');
+            }else if(outSideUrl!=""){
+                var iFrameElem2 = document.getElementById('iframe_yulanInNewAr');
+                iFrameElem2.src=outSideUrl;
+            }else{
+                var iFrameElem = document.getElementById('iframe_yulanInNewAr');
+                iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
+            }
         }
     };
     //得到字数

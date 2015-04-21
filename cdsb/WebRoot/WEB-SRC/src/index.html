@@ -504,7 +504,7 @@
                         <button type="button" class="btn btn-info" ng-click="goGeneral()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_generalArticle" ng-click="setYulanInGeneral(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_generalArticle" ng-click="setYulanInGeneral(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_generalArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -941,7 +941,7 @@
                         <!--<button type="button" class="btn btn-success" ng-click="getEditorContent()"> get data</button>-->
                     <!--</div>-->
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_crawlerArticle" ng-click="setYulanInCrawler(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_crawlerArticle" ng-click="setYulanInCrawler(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_crawlerArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -1252,7 +1252,7 @@
                         <button type="button" class="btn btn-info" ng-click="goPending()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_pendingAr" ng-click="setYulanInPending(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_pendingAr" ng-click="setYulanInPending(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_pendingAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -1475,7 +1475,7 @@
                         <button type="button" class="btn btn-info" ng-click="goPublished()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_publishedArticle" ng-click="setYulanInPublished(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_publishedArticle" ng-click="setYulanInPublished(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                         <!--<button type="button" class="btn btn-info" ng-click="setPreview(articleData.id,articleData.content)">预览</button>-->
                     </div>
                     <div class="modal fade" id="yulan_publishedArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
@@ -1888,7 +1888,7 @@
                         <button type="button" class="btn btn-info" ng-click="goRevoked()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_revokedAr" ng-click="setYulanInRevoked(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_revokedAr" ng-click="setYulanInRevoked(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_revokedAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -2180,7 +2180,7 @@
                         <button type="button" class="btn btn-info" ng-click="goDraft()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_draftAr" ng-click="setYulanInDraft(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_draftAr" ng-click="setYulanInDraft(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_draftAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -3242,7 +3242,7 @@
                         <button type="button" class="btn btn-info" ng-click="goCrawlerPicture()"><span class="glyphicon glyphicon-chevron-left"></span> </button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_crawlerPicAr" ng-click="setYulanInCraPic(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_crawlerPicAr" ng-click="setYulanInCraPic(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_crawlerPicAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -3570,7 +3570,7 @@
                         <button type="button" class="btn btn-info" ng-click="goPendingPicture()"><span class="glyphicon glyphicon-chevron-left"></span></button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_pendPicAr" ng-click="setYulanInPendPic(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_pendPicAr" ng-click="setYulanInPendPic(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_pendPicAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -3796,7 +3796,7 @@
                         <button type="button" class="btn btn-md btn-info" ng-click="goPublishedPicture()"><span class="glyphicon glyphicon-chevron-left"></span></button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_publishedPicAr" ng-click="setYulanInPubPic(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_publishedPicAr" ng-click="setYulanInPubPic(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_publishedPicAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -4199,7 +4199,7 @@
                         <button type="button" class="btn btn-info" ng-click="goRevokedPicture()"><span class="glyphicon glyphicon-chevron-left"></span></button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_revokedPicAr" ng-click="setYulanInRevPic(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_revokedPicAr" ng-click="setYulanInRevPic(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_revokedPicAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">
@@ -4519,7 +4519,7 @@
                         <button type="button" class="btn btn-info" ng-click="goDraftPicture()"><span class="glyphicon glyphicon-chevron-left"></span></button>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_draftPicAr" ng-click="setYulanInDraPic(articleData.id,articleData.content)">预览</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#yulan_draftPicAr" ng-click="setYulanInDraPic(articleData.id,articleData.content,articleData.outSideUrl)">预览</button>
                     </div>
                     <div class="modal fade" id="yulan_draftPicAr" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
                         <div class="modal-dialog">

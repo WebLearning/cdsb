@@ -3,14 +3,17 @@
  */
 angular.module("Dashboard").controller("publishedPictureViewCtrl",["$scope","$http",function($scope,$http){
 
-    $scope.setYulanInPubPic=function(id,content){
+    $scope.setYulanInPubPic=function(id,content,outSideUrl){
         console.log(id);
-        console.log($scope.articleData.id);
-        if(content==""){
-            alert("内容为空，不可预览！");
+        console.log($scope.newArticleData.id);
+        if((content=="")&&(outSideUrl=="")){
+            alert("内容和外链同时为空，不可预览！");
             var iFrameElem1 = document.getElementById('iframe_yulanInPubPicAr');
             iFrameElem1.src="";
             $('#yulan_publishedPicAr').modal('toggle');
+        }else if(outSideUrl!=""){
+            var iFrameElem2 = document.getElementById('iframe_yulanInPubPicAr');
+            iFrameElem2.src=outSideUrl;
         }else{
             var iFrameElem = document.getElementById('iframe_yulanInPubPicAr');
             iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
