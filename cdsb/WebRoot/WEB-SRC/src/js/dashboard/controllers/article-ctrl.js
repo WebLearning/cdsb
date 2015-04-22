@@ -364,17 +364,17 @@ angular.module("Dashboard").controller("articleCtrl", ["$scope","$http", functio
         if(id==null||id==""){
             alert("请先保存，否则不可预览！");
         }else{
-            if((content=="")&&(outSideUrl=="")){
-                alert("内容为空，不可预览！");
+            if((content==""||content==null)&&(outSideUrl==""||outSideUrl==null)){
+                alert("内容和外链url同时为空，不可预览！");
                 var iFrameElem1 = document.getElementById('iframe_yulanInNewAr');
                 iFrameElem1.src="";
                 $('#yulan_newArticle').modal('toggle');
-            }else if(outSideUrl!=""){
-                var iFrameElem2 = document.getElementById('iframe_yulanInNewAr');
-                iFrameElem2.src=outSideUrl;
-            }else{
+            }else if(outSideUrl==""||outSideUrl==null){
                 var iFrameElem = document.getElementById('iframe_yulanInNewAr');
                 iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
+            }else if((outSideUrl!="")||(outSideUrl!=null)){
+                var iFrameElem2 = document.getElementById('iframe_yulanInNewAr');
+                iFrameElem2.src=outSideUrl;
             }
         }
     };

@@ -4,17 +4,17 @@ angular.module("Dashboard").controller("generalViewArticleCtrl", ["$scope","$htt
     $scope.setYulanInGeneral=function(id,content,outSideUrl){
         console.log(id);
         console.log($scope.articleData.id);
-        if((content=="")&&(outSideUrl=="")){
+        if((content==""||content==null)&&(outSideUrl==""||outSideUrl==null)){
             alert("内容和外链url同时为空，不可预览！");
             var iFrameElem1 = document.getElementById('iframe_yulanInGeneralAr');
             iFrameElem1.src="";
             $('#yulan_generalArticle').modal('toggle');
-        }else if(outSideUrl!=""){
-            var iFrameElem2 = document.getElementById('iframe_yulanInGeneralAr');
-            iFrameElem2.src=outSideUrl;
-        }else{
+        }else if(outSideUrl==""||outSideUrl==null){
             var iFrameElem = document.getElementById('iframe_yulanInGeneralAr');
             iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
+        }else if((outSideUrl!="")||(outSideUrl!=null)){
+            var iFrameElem2 = document.getElementById('iframe_yulanInGeneralAr');
+            iFrameElem2.src=outSideUrl;
         }
     };
     $scope.goGeneral=function()

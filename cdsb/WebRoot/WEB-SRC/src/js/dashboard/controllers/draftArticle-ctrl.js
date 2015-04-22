@@ -8,17 +8,17 @@ angular.module("Dashboard").controller("draftArticleCtrl", ["$scope","$http", fu
     $scope.setYulanInDraft=function(id,content,outSideUrl){
         console.log(id);
         console.log($scope.newArticleData.id);
-        if((content=="")&&(outSideUrl=="")){
+        if((content==""||content==null)&&(outSideUrl==""||outSideUrl==null)){
             alert("内容和外链同时为空，不可预览！");
             var iFrameElem1 = document.getElementById('iframe_yulanInDrAr');
             iFrameElem1.src="";
             $('#yulan_draftAr').modal('toggle');
-        }else if(outSideUrl!=""){
-            var iFrameElem2 = document.getElementById('iframe_yulanInDrAr');
-            iFrameElem2.src=outSideUrl;
-        }else{
+        }else if(outSideUrl==""||outSideUrl==null){
             var iFrameElem = document.getElementById('iframe_yulanInDrAr');
             iFrameElem.src=$scope.projectName+"/app/ios/articledetail/"+id;
+        }else if((outSideUrl!="")||(outSideUrl!=null)){
+            var iFrameElem2 = document.getElementById('iframe_yulanInDrAr');
+            iFrameElem2.src=outSideUrl;
         }
     };
     $scope.backCurDraft=function(){
