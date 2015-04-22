@@ -18,6 +18,7 @@ import com.shangbao.app.model.ActiveModel;
 import com.shangbao.app.model.AppChannelModel;
 import com.shangbao.app.model.AppModel;
 import com.shangbao.app.model.AppPictureModel;
+import com.shangbao.app.model.ArticleInfo;
 import com.shangbao.app.model.ColumnPageModel;
 import com.shangbao.app.model.FrontPageModel;
 import com.shangbao.dao.ArticleDao;
@@ -113,9 +114,29 @@ public class AppService {
 					List<Article> articles = appModel.getAppMap().get(sonChannel.getChannelName());
 					if(articles != null){
 						if(titleSize >= articles.size()){
-							appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), articles.subList(0, articles.size()));
+							if(channelEnName.equals("kuaipai") && articles.size() > 1){
+								List<Article> tempArticles = new ArrayList<>();
+								if(sonChannel.getChannelName().equals("拍客集")){
+									tempArticles.add(articles.get(1));
+								}else{
+									tempArticles.add(articles.get(0));
+								}
+								appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), tempArticles);
+							}else{
+								appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), articles.subList(0, articles.size()));
+							}
 						}else{
-							appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), articles.subList(0, titleSize));
+							if(channelEnName.equals("kuaipai") && articles.size() > 1){
+								List<Article> tempArticles = new ArrayList<>();
+								if(sonChannel.getChannelName().equals("PK台")){
+									tempArticles.add(articles.get(1));
+								}else{
+									tempArticles.add(articles.get(0));
+								}
+								appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), tempArticles);
+							}else{
+								appChannelModel.addColumn(sonChannel.getChannelName(), sonChannel.getEnglishName(), articles.subList(0, titleSize));
+							}
 						}
 					}
 				}
@@ -204,6 +225,34 @@ public class AppService {
 			}
 		}
 		return appHtml;
+	}
+	
+	public ArticleInfo getArticleInfo(Long articleId){
+		ArticleInfo articleInfo = new ArticleInfo();
+		if(!appModel.getArticleMap().isEmpty()){
+			if(appModel.getArticleMap().containsKey(articleId)){
+				Article article = appModel.getArticleMap().get(articleId);
+				articleInfo.setTitle(article.getTitle());
+				List<String> picUrls = article.getPicturesUrl();
+				if(picUrls != null && !picUrls.isEmpty()){
+					articleInfo.setPicUrl(picUrls.get(0).replaceAll("/mid/", "/sim/"));
+				}else{
+					articleInfo.setPicUrl("http://www.cdsb.mobi/cdsb/WEB-SRC/icon.png");
+				}
+			}else {
+				Article articleInMongo = articleServiceImp.findOne(articleId);
+				if(articleInMongo != null){
+					articleInfo.setTitle(articleInMongo.getTitle());
+					List<String> picUrls = articleInMongo.getPicturesUrl();
+					if(picUrls != null && !picUrls.isEmpty()){
+						articleInfo.setPicUrl(picUrls.get(0).replaceAll("/mid/", "/sim/"));
+					}else{
+						articleInfo.setPicUrl("http://www.cdsb.mobi/cdsb/WEB-SRC/icon.png");
+					}
+				}
+			}
+		}
+		return articleInfo;
 	}
 	
 	public int addJsClick(Long articleId){

@@ -390,6 +390,14 @@ public class ArticleController {
 		}
 	}
 	
+	@RequestMapping(value="/timepush/{time:[\\d]+}", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public void pushTime(@RequestBody PushModel pushModel, @PathVariable("time") Long time){
+		if(pushModel.getArticleId() != 0 && pushModel.getMessage() != null){
+			pushTask(pushModel.getArticleId(), time, pushModel.getMessage());
+		}
+	}
+	
 	private void publishTask(final List<Long> idList, final Long date, final String message){
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -402,6 +410,17 @@ public class ArticleController {
 				}else{
 					articleServiceImp.setPutState(ArticleState.Pending, idList, message);
 				}
+			}
+		}, date);
+	}
+	
+	private void pushTask(final Long id, final Long date, final String message){
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				appPushService.push(message, id);
 			}
 		}, date);
 	}

@@ -48,6 +48,7 @@ import com.shangbao.app.model.ActiveModel;
 import com.shangbao.app.model.AppChannelModel;
 import com.shangbao.app.model.AppPictureModel;
 import com.shangbao.app.model.AppResponseModel;
+import com.shangbao.app.model.ArticleInfo;
 import com.shangbao.app.model.ColumnPageModel;
 import com.shangbao.app.model.CommentPageModel;
 import com.shangbao.app.model.FrontPageModel;
@@ -96,11 +97,16 @@ public class AppController {
 	@RequestMapping(value="/phoneinfo/test", method=RequestMethod.GET)
 	@ResponseBody
 	public String testDomain(HttpServletResponse response){
-		Cookie cookie = new Cookie("kuayu", "OK");
-		cookie.setPath("/");
-		//cookie.setDomain("120.27.47.167");
-		response.addCookie(cookie);
-		return "OK";
+		File testFile = new File(".." + File.separator + "webapps" + File.separator + "cdsb" + File.separator + "WEB-SRC" + File.separator + "pictureset" + File.separator + "test.txt");
+		if(Files.notExists(testFile.toPath())){
+			try {
+				Files.createFile(testFile.toPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return testFile.getAbsolutePath();
 	}
 	
 	/**
@@ -165,6 +171,12 @@ public class AppController {
 	@ResponseBody
 	public String getNews(@PathVariable("articleId") long articleId){
 		return appService.getNewsHtml(articleId).html;
+	}
+	
+	@RequestMapping(value="/{phoneType}/articleinfo/{articleId:[\\d]+}", method=RequestMethod.GET)
+	@ResponseBody
+	public ArticleInfo getArticlInfo(@PathVariable("articleId") long articleId){
+		return appService.getArticleInfo(articleId);
 	}
 	
 	/**

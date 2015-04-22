@@ -95,10 +95,10 @@ public class AppAuthController {
 			User criteriaUser = new User();
 			criteriaUser.setPhone(user.getPhone());
 			int tag = userIdentifyService.remoteUserExist(user);
-			if(userServiceImp.findOne(criteriaUser) == null || tag == 1){
+			if(userServiceImp.findOne(criteriaUser) == null && tag != 1){
 				User criteriaUser2 = new User();
 				criteriaUser2.setName(user.getName());
-				if(userServiceImp.findOne(criteriaUser2) == null || tag == 2){
+				if(userServiceImp.findOne(criteriaUser2) == null && tag != 2){
 					if(userIdentifyService.addUser(user)){
 						appResponseModel.setResultCode(1);
 						appResponseModel.setResultMsg("注册成功");
@@ -146,10 +146,10 @@ public class AppAuthController {
 				User criteriaUser = new User();
 				criteriaUser.setPhone(user.getPhone());
 				int tag = userIdentifyService.remoteUserExist(user);
-				if(userServiceImp.findOne(criteriaUser) == null || tag == 1){
+				if(userServiceImp.findOne(criteriaUser) == null && tag != 1){
 					User criteriaUser2 = new User();
 					criteriaUser2.setName(user.getName());
-					if(userServiceImp.findOne(criteriaUser2) == null || tag == 2){
+					if(userServiceImp.findOne(criteriaUser2) == null && tag != 2){
 						if(userIdentifyService.addUser(user)){
 							appResponseModel.setResultCode(1);
 							appResponseModel.setResultMsg("注册成功");
@@ -207,7 +207,8 @@ public class AppAuthController {
 		User criteriaUser = new User();
 		criteriaUser.setPhone(phoneNum);
 		User user = userServiceImp.findOne(criteriaUser);
-		if(user != null){
+		int tag = userIdentifyService.remoteUserExist(criteriaUser);
+		if(user != null || tag != 0){
 			appResponseModel.setResultCode(0);
 			appResponseModel.setResultMsg("手机号已注册");
 			return appResponseModel;

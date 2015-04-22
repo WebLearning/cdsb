@@ -1,6 +1,8 @@
 package com.shangbao.app.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Properties;
 
@@ -24,6 +26,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.codehaus.jackson.map.DeserializationConfig; 
 
@@ -256,14 +259,17 @@ public class UserIdentifyService {
 		int tag = 0;
 		if(user.getPhone() != null && user.getPhone() != ""){
 			String result = restTemplate.getForObject(remoteUrl + "isExists/" + user.getPhone() + "/" + 1, String.class);
-			if(result.length() < 56){
+			if(result.length() > 56){
 				tag = 1;
+				return tag;
 			}
 		}
 		if(user.getName() != null && user.getName() != ""){
-			String result = restTemplate.getForObject(remoteUrl + "isExists/" + user.getName() + "/" + 2, String.class);
-			if(result.length() < 56){
+			String result;
+			result = restTemplate.getForObject(remoteUrl + "isExists/" + user.getName() + "/" + 2, String.class);
+			if(result.length() > 56){
 				tag = 2;
+				return tag;
 			}
 		}
 		return tag;

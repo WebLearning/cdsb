@@ -108,7 +108,7 @@
 			cron="0 0 23 * * ?" />
 		<task:scheduled ref="kuaipaiPKTask" method="findTopArticle"
 			cron="0 55 23 * * ?" />
-		<task:scheduled ref="kuaipaiDSTask" method="method"
+		<task:scheduled ref="kuaipaiDSTask" method="newMethod"
 			cron="0 05 00 * * ?"/>	
 	</task:scheduled-tasks>
 
