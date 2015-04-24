@@ -315,7 +315,7 @@
                 后台管理系统 / {{curPage}}
               </div>
             </div>
-            <div class="user col-md-3 col-md-offset-6">
+            <div class="user col-md-3 col-md-offset-4">
                 <div class="item dropdown">
                     <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                         <!--<img src="img/avatar.jpg">-->
@@ -1594,6 +1594,7 @@
                                 <button type="button" class="btn btn-danger" ng-click="deleteArticleInPublished()">撤销</button>
                                 <button type="button" class="btn btn-info" ng-click="saveArticleInPublished()">保存修改</button>
                                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#send_published" ng-click="assignValueMessage()">推送</button>
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#send_publishedInTime" ng-click="assignValueMessageInTime()">定时推送</button>
                             </div>
                         </form>
                         <p>&nbsp;</p>
@@ -1613,6 +1614,25 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                         <button type="button" class="btn btn-primary" ng-click="sendMessage()">确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="send_publishedInTime" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <h4 class="modal-title">添加推送信息</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="text" id="inputMessage_publishedInTime" class="form-control" value="" ng-model="sendMessageData.message">
+                                        <br>
+                                        <input type="datetime-local" class="form-control" placeholder="请输入时间" ng-model="sendTimeInPublished">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        <button type="button" class="btn btn-primary" ng-click="sendMessageInTime()">确认</button>
                                     </div>
                                 </div>
                             </div>
@@ -3910,6 +3930,7 @@
                                 <button type="button" class="btn btn-danger" ng-click="deletePictureArticleSelections()">撤销</button>
                                 <button type="button" class="btn btn-info" ng-click="saveArticleInPublished()">保存修改</button>
                                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#send_publishedPicture" ng-click="assignPictureValueMessage()">推送</button>
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#send_publishedPicInTime" ng-click="assignPictureValueMessageInTime()">定时推送</button>
                             </div>
                         </form>
                         <p>&nbsp;</p>
@@ -3927,6 +3948,25 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                         <button type="button" class="btn btn-primary" ng-click="sendPictureMessage()">确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="send_publishedPicInTime" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <h4 class="modal-title">添加推送信息</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="text" id="inputMessage_publishedPicInTime" class="form-control" value="" ng-model="sendPictureMessageData.message">
+                                        <br>
+                                        <input type="datetime-local" class="form-control" placeholder="请输入时间" ng-model="sendTimeInPublishedPic">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        <button type="button" class="btn btn-primary" ng-click="sendMessagePicInTime()">确认</button>
                                     </div>
                                 </div>
                             </div>

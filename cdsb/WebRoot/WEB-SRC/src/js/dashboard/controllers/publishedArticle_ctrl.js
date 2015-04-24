@@ -22,7 +22,6 @@ angular.module("Dashboard").controller("publishedArticleCtrl", ["$scope","$http"
 //    };
     $scope.setYulanInPublished=function(id,content,outSideUrl){
         console.log(id);
-        console.log($scope.newArticleData.id);
         if((content==""||content==null)&&(outSideUrl==""||outSideUrl==null)){
             alert("内容和外链同时为空，不可预览！");
             var iFrameElem1 = document.getElementById('iframe_yulanInPubAr');
@@ -86,6 +85,12 @@ angular.module("Dashboard").controller("publishedArticleCtrl", ["$scope","$http"
         inputMessageid.setAttribute("value",inputMessageid.value);
         $scope.sendMessageData.message=$scope.articleData.title;
     };
+    $scope.assignValueMessageInTime=function(){
+        var inputMessageid=document.getElementById("inputMessage_publishedInTime");
+        inputMessageid.value=$scope.articleData.title;
+        inputMessageid.setAttribute("value",inputMessageid.value);
+        $scope.sendMessageData.message=$scope.articleData.title;
+    };
     $scope.sendMessage=function(){
         $scope.coverIt();
 //        console.log($scope.articleData.id);
@@ -103,6 +108,35 @@ angular.module("Dashboard").controller("publishedArticleCtrl", ["$scope","$http"
             $http.post(url,jsonString).success(function(){
                 alert("推送成功");
                 $('#send_published').modal('toggle');
+                $scope.clearSendMessageData();
+                $scope.closeOver();
+            });
+        }
+    };
+    $scope.sendMessageInTime=function(){
+        $scope.coverIt();
+        var myDate=new Date();
+        var myDateTime=myDate.getTime();
+        var str1=$scope.sendTimeInPublished.substr(0,10);
+        var str2=$scope.sendTimeInPublished.substr(11,16);
+        var str3=str1.concat(" ");
+        var str4=str3.concat(str2);
+        var str5=new Date(str4);
+        var myPublishedTime=str5.getTime();
+        var time=myPublishedTime-myDateTime;
+        console.log(time);
+        var url=$scope.projectName+'/article/timepush/'+time;
+        $scope.sendMessageData.articleId=$scope.articleData.id;
+        var jsonString=JSON.stringify($scope.sendMessageData);
+        console.log(jsonString);
+        console.log(url);
+        if($scope.articleData.channel.length==0){
+            alert("分类不能为空");
+            $scope.closeOver();
+        }else if($scope.articleData.channel.length!=0){
+            $http.post(url,jsonString).success(function(){
+                alert("推送成功");
+                $('#send_publishedInTime').modal('toggle');
                 $scope.clearSendMessageData();
                 $scope.closeOver();
             });

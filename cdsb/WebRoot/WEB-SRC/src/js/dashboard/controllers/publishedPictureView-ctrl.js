@@ -5,7 +5,6 @@ angular.module("Dashboard").controller("publishedPictureViewCtrl",["$scope","$ht
 
     $scope.setYulanInPubPic=function(id,content,outSideUrl){
         console.log(id);
-        console.log($scope.newArticleData.id);
         if((content==""||content==null)&&(outSideUrl==""||outSideUrl==null)){
             alert("内容和外链同时为空，不可预览！");
             var iFrameElem1 = document.getElementById('iframe_yulanInPubPicAr');
@@ -74,6 +73,12 @@ angular.module("Dashboard").controller("publishedPictureViewCtrl",["$scope","$ht
         inputMessageid.setAttribute("value",inputMessageid.value);
         $scope.sendPictureMessageData.message=$scope.articleData.title;
     };
+    $scope.assignPictureValueMessageInTime=function(){
+        var inputMessageid=document.getElementById("inputMessage_publishedPicInTime");
+        inputMessageid.value=$scope.articleData.title;
+        inputMessageid.setAttribute("value",inputMessageid.value);
+        $scope.sendPictureMessageData.message=$scope.articleData.title;
+    };
     $scope.sendPictureMessage=function(){
 //        console.log($scope.articleData.id);
         $scope.coverIt();
@@ -91,6 +96,35 @@ angular.module("Dashboard").controller("publishedPictureViewCtrl",["$scope","$ht
             $http.post(url,jsonString).success(function(){
                 alert("推送成功");
                 $('#send_publishedPicture').modal('toggle');
+                $scope.clearSendPictureMessageData();
+                $scope.closeOver();
+            });
+        }
+    };
+    $scope.sendMessagePicInTime=function(){
+        $scope.coverIt();
+        var myDate=new Date();
+        var myDateTime=myDate.getTime();
+        var str1=$scope.sendTimeInPublishedPic.substr(0,10);
+        var str2=$scope.sendTimeInPublishedPic.substr(11,16);
+        var str3=str1.concat(" ");
+        var str4=str3.concat(str2);
+        var str5=new Date(str4);
+        var myPublishedTime=str5.getTime();
+        var time=myPublishedTime-myDateTime;
+        console.log(time);
+        var url=$scope.projectName+'/article/timepush/'+time;
+        $scope.sendPictureMessageData.articleId=$scope.articleData.id;
+        var jsonString=JSON.stringify($scope.sendPictureMessageData);
+        console.log(jsonString);
+        console.log(url);
+        if($scope.articleData.channel.length==0){
+            alert("分类不能为空");
+            $scope.closeOver();
+        }else if($scope.articleData.channel.length!=0){
+            $http.post(url,jsonString).success(function(){
+                alert("推送成功");
+                $('#send_publishedPicInTime').modal('toggle');
                 $scope.clearSendPictureMessageData();
                 $scope.closeOver();
             });
