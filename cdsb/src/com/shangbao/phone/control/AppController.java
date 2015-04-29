@@ -4,13 +4,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -31,6 +35,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,6 +97,34 @@ public class AppController {
 			returnInfo.setMessage("UDID IS EMPTY");
 			return returnInfo;
 		}
+	}
+	
+	@RequestMapping(value="/getcookie", method=RequestMethod.GET)
+	public void getCookieJsonp(HttpServletRequest request,HttpServletResponse response){
+		try {  
+	        response.setContentType("text/plain;charset=UTF-8");  
+	        response.setHeader("Pragma", "No-cache");  
+	        response.setHeader("Cache-Control", "no-cache"); 
+	        response.setHeader("Access-Control-Allow-Origin","*");
+	        response.setDateHeader("Expires", 0);  
+	        PrintWriter out = response.getWriter();       
+	        Cookie[] cookies = request.getCookies();
+	        StringBuffer cookieString = new StringBuffer();
+	        Map<String, String> cookieMap = new HashMap<>();
+	        if(cookies != null){
+	        	for(Cookie cookie : cookies){
+//	        		cookieString.append("\"" + cookie.getName() + "\"" + ":" + cookie.getValue());
+	        		cookieMap.put(cookie.getName(), cookie.getValue());
+	        	}
+	        }
+	        String jsonpCallback = request.getParameter("callback");//客户端请求参数  
+	        ObjectMapper mapper = new ObjectMapper();
+	        out.println(jsonpCallback+"("+ mapper.writeValueAsString(cookieMap) +")");//返回jsonp格式数据  
+	        out.flush();  
+	        out.close();  
+	      } catch (IOException e) {  
+	       e.printStackTrace();  
+	      }  
 	}
 	
 	@RequestMapping(value="/phoneinfo/test", method=RequestMethod.GET)
@@ -169,8 +202,9 @@ public class AppController {
 	 */
 	@RequestMapping(value="/{phoneType}/articledetail/{articleId:[\\d]+}", method=RequestMethod.GET, produces={"text/html;charset=UTF-8"})
 	@ResponseBody
-	public String getNews(@PathVariable("articleId") long articleId){
-		return appService.getNewsHtml(articleId).html;
+	public String getNews(@PathVariable("articleId") long articleId, HttpServletRequest request){
+		
+		return appService.getNewsHtml(articleId, request.getRemoteAddr()).html;
 	}
 	
 	@RequestMapping(value="/{phoneType}/articleinfo/{articleId:[\\d]+}", method=RequestMethod.GET)
@@ -185,12 +219,15 @@ public class AppController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="/js/addclick/{articleId}", method=RequestMethod.PUT)
+	@RequestMapping(value="/js/addclick/{articleId}/{udid}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public int addClicks(@PathVariable("articleId") long articleId, HttpServletRequest request){
+	public int addClicks(@PathVariable("articleId") long articleId, @PathVariable("udid")String udid, HttpServletRequest request){
 		String ip = request.getRemoteAddr();
-		int clicks = appService.addJsClick(articleId);
+		if(udid.equals("0")){
+			udid = null;
+		}
+		int clicks = appService.addJsClick(articleId, ip, udid);
 		if(clicks > 0){
 			readLogServiceImp.addClick(articleId, ip);
 		}
@@ -431,7 +468,7 @@ public class AppController {
 				fos.write(bytes); // 写入文件
 				fos.close();
 				//压缩800*？
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 800, 0, 0.5, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 1080, 0, 0.5, true);
 				//压缩200 * 150
 				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 200, 150, 0.8, true);
 				

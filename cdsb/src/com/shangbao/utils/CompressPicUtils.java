@@ -253,8 +253,9 @@ public class CompressPicUtils {
 				return false;
 			}
 			Thumbnails.of(inputFile)
-					.watermark(Positions.TOP_RIGHT,ImageIO.read(waterMark), 0.9f)
-					.size(img.getWidth(null), img.getHeight(null))
+					.crop(Positions.CENTER)
+					.size(200, 200)
+					.watermark(Positions.TOP_RIGHT,ImageIO.read(waterMark), 1.0f)
 					.outputQuality(outputQuality)
 					.toFile(outputFile);
 		} catch (IOException e) {

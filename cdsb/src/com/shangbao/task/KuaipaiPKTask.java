@@ -115,32 +115,34 @@ public class KuaipaiPKTask {
 				articleDaoImp.setTopArticle(pkChannelName, newTopArticleId);
 				
 				//画个皇冠
-//				Article topArticle = articleDaoImp.findById(newTopArticleId);
-//				if(topArticle != null){
-//					List<String> picUrls = topArticle.getPicturesUrl();
-//					if(!picUrls.isEmpty() && picUrls != null){
-//						String pic = picUrls.get(0);
-//						String simPic = pic.replace("/mid/", "/sim/");
-//						String simPath = pic.substring(pic.indexOf("picture/"));
-//						String picDicPath = "D:\\apache-tomcat\\webapps\\Shangbao01\\WEB-SRC\\picture";
-//						String waterMark = ".." + File.separator + "webapps" + File.separator + "Shangbao01" + File.separator + "WEB-SRC" + File.separator + "watermark.png";
-//						if(Files.notExists(Paths.get(waterMark))){
-//							return;
-//						}
-//						try {
-//							Properties props = PropertiesLoaderUtils.loadAllProperties("config.properties");
-//							picDicPath = props.getProperty("pictureDir");
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//						simPath.replace("/", File.separator);
-//						String filePath = picDicPath.substring(0, picDicPath.indexOf("picture")) + simPath;
-//						if(Files.exists(Paths.get(filePath))){
-//							compressPicUtils.setWaterMark(new File(filePath), new File(filePath), new File(waterMark), 0.9f);
-//						}
-//					}
-//				}
+				Article topArticle = articleDaoImp.findById(newTopArticleId);
+				if(topArticle != null){
+					List<String> picUrls = topArticle.getPicturesUrl();
+					if(!picUrls.isEmpty() && picUrls != null){
+						String pic = picUrls.get(0);
+						String simPic = pic.replace("/mid/", "/sim/");
+						String simPath = simPic.substring(pic.indexOf("picture/"));
+						String midPath = pic.substring(pic.indexOf("picture/"));
+						String picDicPath = "D:\\apache-tomcat\\webapps\\Shangbao01\\WEB-SRC\\picture";
+						String waterMark = ".." + File.separator + "webapps" + File.separator + "cdsb" + File.separator + "WEB-SRC" + File.separator + "watermark.png";
+						if(Files.notExists(Paths.get(waterMark))){
+							return;
+						}
+						try {
+							Properties props = PropertiesLoaderUtils.loadAllProperties("config.properties");
+							picDicPath = props.getProperty("pictureDir");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						simPath.replace("/", File.separator);
+						String midFilePath = picDicPath.substring(0, picDicPath.indexOf("picture")) + midPath;
+						String filePath = picDicPath.substring(0, picDicPath.indexOf("picture")) + simPath;
+						if(Files.exists(Paths.get(filePath))){
+							compressPicUtils.setWaterMark(new File(midFilePath), new File(filePath), new File(waterMark), 1.0f);
+						}
+					}
+				}
 			}
 		}
 	}

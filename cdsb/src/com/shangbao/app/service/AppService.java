@@ -202,12 +202,12 @@ public class AppService {
 	 * 获取一篇文章的HTML
 	 * @return
 	 */
-	public AppHtml getNewsHtml(Long articleId){
+	public AppHtml getNewsHtml(Long articleId, String fromIp){
 		AppHtml appHtml = new AppHtml();
 		if(!appModel.getArticleMap().isEmpty()){
 			if(appModel.getArticleMap().containsKey(articleId)){
 				appHtml.html = articleToHtml(appModel.getArticleMap().get(articleId));
-				appModel.addClick(articleId);
+				appModel.addClick(articleId, fromIp);
 				appHtml.articleId = articleId;
 			}else{
 				Article articleInMongo = articleServiceImp.findOne(articleId);
@@ -255,8 +255,8 @@ public class AppService {
 		return articleInfo;
 	}
 	
-	public int addJsClick(Long articleId){
-		return appModel.addJsClick(articleId);
+	public int addJsClick(Long articleId, String fromIp, String udid){
+		return appModel.addJsClick(articleId, fromIp, udid);
 	}
 
 	

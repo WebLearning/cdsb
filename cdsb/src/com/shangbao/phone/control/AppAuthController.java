@@ -270,8 +270,8 @@ public class AppAuthController {
 				if(user == null && tag != 0){
 					appResponseModel.setResultCode(0);
 					appResponseModel.setResultMsg("用户不存在");
-					request.getSession().removeAttribute("PHONE_TEXT");
-					request.getSession().removeAttribute("PHONE_NUM");
+//					request.getSession().removeAttribute("PHONE_TEXT");
+//					request.getSession().removeAttribute("PHONE_NUM");
 					return appResponseModel;
 				}else if(user == null && tag == 0){
 					//表示本地数据库中没有，但是商报的数据库中有
@@ -301,8 +301,8 @@ public class AppAuthController {
 			}else{
 				appResponseModel.setResultCode(0);
 				appResponseModel.setResultMsg("验证码错误");
-				request.getSession().removeAttribute("PHONE_TEXT");
-				request.getSession().removeAttribute("PHONE_NUM");
+//				request.getSession().removeAttribute("PHONE_TEXT");
+//				request.getSession().removeAttribute("PHONE_NUM");
 			}
 		}else{
 			appResponseModel.setResultCode(0);
@@ -316,11 +316,11 @@ public class AppAuthController {
 				appResponseModel.setResultMsg("验证码不能为空");
 			}
 			//appResponseModel.setResultMsg("param error");
-			request.getSession().removeAttribute("PHONE_TEXT");
-			request.getSession().removeAttribute("PHONE_NUM");
+//			request.getSession().removeAttribute("PHONE_TEXT");
+//			request.getSession().removeAttribute("PHONE_NUM");
 		}
-		request.getSession().removeAttribute("PHONE_TEXT");
-		request.getSession().removeAttribute("PHONE_NUM");
+//		request.getSession().removeAttribute("PHONE_TEXT");
+//		request.getSession().removeAttribute("PHONE_NUM");
 		return appResponseModel;
 	}
 	
@@ -346,8 +346,8 @@ public class AppAuthController {
 				if(user == null){
 					appResponseModel.setResultCode(0);
 					appResponseModel.setResultMsg("User Not Found");
-					request.getSession().removeAttribute("PHONE_TEXT");
-					request.getSession().removeAttribute("PHONE_NUM");
+//					request.getSession().removeAttribute("PHONE_TEXT");
+//					request.getSession().removeAttribute("PHONE_NUM");
 					return appResponseModel;
 				}else{
 					user.setPasswd(newPasswd);
@@ -363,17 +363,17 @@ public class AppAuthController {
 			}else{
 				appResponseModel.setResultCode(0);
 				appResponseModel.setResultMsg("wrong identify code");
-				request.getSession().removeAttribute("PHONE_TEXT");
-				request.getSession().removeAttribute("PHONE_NUM");
+//				request.getSession().removeAttribute("PHONE_TEXT");
+//				request.getSession().removeAttribute("PHONE_NUM");
 			}
 		}else{
 			appResponseModel.setResultCode(0);
 			appResponseModel.setResultMsg("param error");
-			request.getSession().removeAttribute("PHONE_TEXT");
-			request.getSession().removeAttribute("PHONE_NUM");
+//			request.getSession().removeAttribute("PHONE_TEXT");
+//			request.getSession().removeAttribute("PHONE_NUM");
 		}
-		request.getSession().removeAttribute("PHONE_TEXT");
-		request.getSession().removeAttribute("PHONE_NUM");
+//		request.getSession().removeAttribute("PHONE_TEXT");
+//		request.getSession().removeAttribute("PHONE_NUM");
 		return appResponseModel;
 	}
 	

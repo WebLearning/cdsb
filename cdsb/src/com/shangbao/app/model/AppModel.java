@@ -34,6 +34,8 @@ import com.shangbao.model.persistence.Commend;
 import com.shangbao.model.persistence.NewsCommend;
 import com.shangbao.model.persistence.StartPictures;
 import com.shangbao.model.show.SingleCommend;
+import com.shangbao.service.ClickCountService;
+import com.shangbao.service.ClickService;
 import com.shangbao.service.PendTagService;
 
 @Component
@@ -46,6 +48,10 @@ public class AppModel {
 	private StartPicturesDao startPicturesDaoImp;
 	@Resource
 	private PendTagService pendTagServiceImp;
+	@Resource
+	private ClickCountService clickCountServiceImp;
+	@Resource
+	private ClickService clickServiceImp;
 	
 	private Map<String, List<String>> startPictures = new ConcurrentHashMap<String, List<String>>();//启动显示图片
 	private ReentrantReadWriteLock startPicLock = new ReentrantReadWriteLock();
@@ -635,13 +641,14 @@ public class AppModel {
 	 * 点击
 	 * @param articleId
 	 */
-	public void addClick(Long articleId){
+	public void addClick(Long articleId, String fromIp){
 		Article criteriaArticle = new Article();
 		criteriaArticle.setId(articleId);
 		Update update = new Update();
+		Article article = null;
 		articleMapLock.readLock().lock();
 		try{
-			if(articleMap.get(articleId) != null){
+			if((article = articleMap.get(articleId)) != null){
 				synchronized (AppModel.class) {
 					articleMap.get(articleId).setClicks(articleMap.get(articleId).getClicks() + 1);
 				}
@@ -651,9 +658,13 @@ public class AppModel {
 		}finally{
 			articleMapLock.readLock().unlock();
 		}
+		if(article != null){
+			clickCountServiceImp.add(article.getId(), article.getTitle(), new Date());
+			clickServiceImp.add(article.getId(), fromIp, null, true);
+		}
 	}
 	
-	public int addJsClick(Long articleId){
+	public int addJsClick(Long articleId, String fromIp, String udid){
 		Article criteriaArticle = new Article();
 		criteriaArticle.setId(articleId);
 		Update update = new Update();
@@ -667,6 +678,10 @@ public class AppModel {
 				update.set("js_clicks", articleMap.get(articleId).getJs_clicks());
 				articleDaoImp.update(criteriaArticle, update);
 				//return article.getJs_clicks() * 100 + (int)((new Date().getTime() - article.getTime().getTime())/60000);
+				if(article != null){
+					clickCountServiceImp.add(article.getId(), article.getTitle(), new Date());
+					clickServiceImp.add(article.getId(), fromIp, udid, false);
+				}
 				return articleMap.get(articleId).getJs_clicks();
 			}
 		}finally{
