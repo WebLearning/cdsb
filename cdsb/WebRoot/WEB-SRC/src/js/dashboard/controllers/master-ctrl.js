@@ -215,6 +215,8 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
             $scope.refreshCommentCur();
         }else if(str=="投诉"){
 
+        }else if(str=="点击数"){
+            $scope.getClickData(1);
         }
     };
 
@@ -381,6 +383,64 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
         document.getElementById("commentDetails").className="tab-pane";
 //        $scope.refreshComment();
         $scope.getCommentData($scope.commentData.currentNo);
+    };
+    //------------------------------------------------------------------------------------------------------------------
+    //获取点击数页面----
+    $scope.clickData=null;
+    $scope.clickPaginationConf = {
+        currentPage: null,
+        totalItems:null,
+        itemsPerPage: 20,
+        pagesLength: 10,
+        perPageOptions: [10, 20, 30, 40, 50],
+        rememberPerPage: 'perPageItems',
+        onChange: function(){
+            $scope.coverIt();
+            if($scope.clickPaginationConf.currentPage>0){
+                $scope.getClickData($scope.clickPaginationConf.currentPage);
+//                $scope.closeOver();
+            }else{
+                $scope.closeOver();
+            }
+//            $scope.closeOver();
+        }
+    };
+    $scope.urlForClick="";
+    $scope.getClickData=function(pageID)
+    {
+        if($scope.userInfo_duty!=""){
+            $scope.urlForClick=$scope.projectName+'/articleclick/'+pageID.toString();
+        }
+//        var url=$scope.projectName+'/commend/'+pageID.toString()+$scope.orderCondition;
+        $http.get($scope.urlForClick).success(function(data){
+            if(data.pageCount>0){
+                $scope.clickData=data;
+                $scope.clickPageNums=getPageNums($scope.clickData.pageCount);
+                $scope.lastClickPage=$scope.clickData.pageCount;
+                $scope.clickPaginationConf.currentPage=$scope.clickData.currentNo;
+                $scope.getLastClickPageData($scope.lastClickPage);
+//                console.log("test");
+                $scope.closeOver();
+            }else{
+                $scope.clickData=data;
+                $scope.clickPaginationConf.currentPage=0;
+                $scope.clickPaginationConf.totalItems=0;
+//                console.log("test");
+                $scope.closeOver();
+            }
+        });
+    };
+    $scope.urlForClickLast="";
+    $scope.getLastClickPageData=function(lastPage){
+        if($scope.userInfo_duty!=""){
+            $scope.urlForClickLast=$scope.projectName+'/articleclick/'+lastPage;
+        }
+//        var url=$scope.projectName+'/commend/'+lastPage+$scope.orderCondition;
+        $http.get($scope.urlForClickLast).success(function(data){
+            $scope.latClickPageData=data;
+            $scope.lastClickPageDataLength=$scope.latClickPageData.content.length;
+            $scope.clickPaginationConf.totalItems=(($scope.latClickPageData.pageCount)-1)*20+$scope.lastClickPageDataLength;
+        });
     };
 //（1）获取爬虫数据-----------------------------------------------------------------------------------------------------
     $scope.crawlerData=null;
@@ -2434,6 +2494,7 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
         $scope.getCommentDetailDataInPublishedPic(1);
         $scope.getCommentDetailTitleInPublishedPic(title,type);
     };
+
     //------------------------------------------------------------------------------------------------------------------
     //加载时显示转圈----------------------------------------------------------------------------------------------------
 //------------------------------------------------
