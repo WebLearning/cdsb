@@ -411,7 +411,6 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
         if($scope.userInfo_duty!=""){
             $scope.urlForClick=$scope.projectName+'/articleclick/'+pageID.toString();
         }
-//        var url=$scope.projectName+'/commend/'+pageID.toString()+$scope.orderCondition;
         $http.get($scope.urlForClick).success(function(data){
             if(data.pageCount>0){
                 $scope.clickData=data;
@@ -435,7 +434,6 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
         if($scope.userInfo_duty!=""){
             $scope.urlForClickLast=$scope.projectName+'/articleclick/'+lastPage;
         }
-//        var url=$scope.projectName+'/commend/'+lastPage+$scope.orderCondition;
         $http.get($scope.urlForClickLast).success(function(data){
             $scope.latClickPageData=data;
             $scope.lastClickPageDataLength=$scope.latClickPageData.content.length;
