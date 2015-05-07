@@ -131,7 +131,7 @@ function getUDID(name) {
 	console.log("get udid ----come in");
 	var strCookie = document.cookie;
 	console.log(strCookie);
-	var arrCookie = strCookie.split(";");
+	var arrCookie = strCookie.split("; ");
 	for (var i = 0; i < arrCookie.length; i++) {
 		var arr = arrCookie[i].split("=");
 		if (arr[0] == name) {

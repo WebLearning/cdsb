@@ -28,7 +28,7 @@ public class MyUserDetailService implements UserDetailsService {
 		if(ulist.size() == 1){
 			return (UserDetails) (ulist.toArray())[0];
 		}
-		return user;
+		return null;
 	}
 
 	public UserDetails loadUserByEmail(String email){

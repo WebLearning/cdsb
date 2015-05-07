@@ -69,8 +69,9 @@ public class ColumnPageModel {
 //					}
 //					picUrl.add(newUrl);
 					//System.out.println(article.getTitle() + "  " + article.isTag() + " "  + url);
-					midPicUrl.add(url);
+//					midPicUrl.add(url);
 					if(url.substring(url.lastIndexOf("/") - 3, url.lastIndexOf("/")).equals("mid")){
+						midPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 						simPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 					}
 				}

@@ -267,19 +267,19 @@ public class AppAuthController {
 				criteriaUser.setPhone(phoneNum);
 				User user = userServiceImp.findOne(criteriaUser);
 				int tag = userIdentifyService.remoteUserExist(criteriaUser);
-				if(user == null && tag != 0){
+				if(user == null && tag == 0){
 					appResponseModel.setResultCode(0);
 					appResponseModel.setResultMsg("用户不存在");
 //					request.getSession().removeAttribute("PHONE_TEXT");
 //					request.getSession().removeAttribute("PHONE_NUM");
 					return appResponseModel;
-				}else if(user == null && tag == 0){
+				}else if(user == null && tag != 0){
 					//表示本地数据库中没有，但是商报的数据库中有
 					User userWithoutPw = userIdentifyService.getRemoteUserWithoutPW(phoneNum);
 					userWithoutPw.setPasswd(passwdModel.getNewPasswd());
 					if(userIdentifyService.updateUser(userWithoutPw)){
-						userWithoutPw.setPasswd(passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null));
-						userServiceImp.addUser(userWithoutPw);
+//						userWithoutPw.setPasswd(passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null));
+//						userServiceImp.addUser(userWithoutPw);
 						appResponseModel.setResultCode(1);
 						appResponseModel.setResultMsg("成功");
 					}

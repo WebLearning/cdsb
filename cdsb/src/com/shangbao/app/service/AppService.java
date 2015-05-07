@@ -19,6 +19,7 @@ import com.shangbao.app.model.AppChannelModel;
 import com.shangbao.app.model.AppModel;
 import com.shangbao.app.model.AppPictureModel;
 import com.shangbao.app.model.ArticleInfo;
+import com.shangbao.app.model.CdsbModel;
 import com.shangbao.app.model.ColumnPageModel;
 import com.shangbao.app.model.FrontPageModel;
 import com.shangbao.dao.ArticleDao;
@@ -253,6 +254,17 @@ public class AppService {
 			}
 		}
 		return articleInfo;
+	}
+	
+	/**
+	 * 获取为商报遗留app提供的文章
+	 * @param sortTime
+	 * @return
+	 */
+	public CdsbModel getCdsbModel(long sortTime){
+		CdsbModel model = new CdsbModel();
+		
+		return model;
 	}
 	
 	public int addJsClick(Long articleId, String fromIp, String udid){
@@ -528,7 +540,7 @@ public class AppService {
 			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-CN\"><head profile=\"http://gmpg.org/xfn/11\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width\" /> <title>");
-			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报新闻客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script>");
+			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报新闻客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/debuggap.js\"></script>");
 			html.append("<link href=\" " + localhostString +  "/WEB-SRC/videojs/video-js.css\" rel = \"stylesheet\" type=\"text/css\"><script src = \" " + localhostString + "/WEB-SRC/videojs/video.js\"></script><script>videojs.options.flash.swf = \" " + localhostString + "/WEB-SRC/videojs/video-js.swf\";</script>");//vedio-js
 			html.append("</head><body class=\"classic-wptouch-bg\"> " +  " <input type=\"hidden\" name=\"id\" value=" + article.getId() + "/> <div class=\"content single\"> <div class=\"post\"> <a class=\"sh2\">");
 			html.append(article.getTitle().replace("\\n", "<br/>") + "</a><div style=\"font-size:15px; padding: 5px 0;\"></div><div class=\"single-post-meta-top\">");

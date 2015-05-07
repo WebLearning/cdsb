@@ -83,8 +83,9 @@ public class AppChannelModel {
 //					}else{
 //						picUrl.add(url);
 //					}
-					midPicUrl.add(url);
+//					midPicUrl.add(url);
 					if(url.contains("/mid/")){
+						midPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 						simPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 					}
 				}

@@ -133,9 +133,9 @@ public class CrawlerGetController {
 				fos.write(bytes); // 写入文件
 				fos.close();
 				//压缩 800 * ？
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileURLMid + File.separator + fileNameString), 1024, 0, 0.5, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileURLMid + File.separator + fileNameString), 1080, 0, 1.0, true);
 				//压缩 200 * 150
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileURLSim + File.separator + fileNameString), 200, 150, 0.8, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileURLSim + File.separator + fileNameString), 400, 300, 1.0, true);
 				returnPath = returnPath + path.toString().split("cdsb")[1] + File.separator + "mid" + File.separator + fileNameString;
 //				System.out.println(returnPath.replaceAll("\\\\", "/"));
 			} catch (IOException e) {

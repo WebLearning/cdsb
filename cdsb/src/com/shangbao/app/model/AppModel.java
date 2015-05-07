@@ -68,6 +68,8 @@ public class AppModel {
 	private Map<Long, Article> articleMap = new ConcurrentHashMap<>();//key是文章的id，value对应一篇文章
 	private ReentrantReadWriteLock articleMapLock = new ReentrantReadWriteLock();
 	
+	private List<Article> sbArticles = new CopyOnWriteArrayList<>();
+	private ReentrantReadWriteLock sbLock = new ReentrantReadWriteLock();
 	
 	@Autowired
 	public AppModel(@Qualifier("articleDaoImp") ArticleDao articleDaoImp, 
@@ -115,6 +117,7 @@ public class AppModel {
 //		for(String key : channelEn_Cn.keySet()){
 //			System.out.println("key: " + key + "  value: " + channelEn_Cn.get(key));
 //		}
+		redeploySbArticles();
 	}
 	
 	public List<Channel> getChannelOrdered(){
@@ -307,6 +310,23 @@ public class AppModel {
 //		this.activities.addAll(channelDaoImp.find(criteriaActivity));
 	}
 	
+	public void redeploySbArticles(){
+		List<Article> articles = new ArrayList<>();
+		Article criteriaArticle = new Article();
+		criteriaArticle.setState(ArticleState.Published);
+		criteriaArticle.addChannel("成都滚动");
+		criteriaArticle.addChannel("成都八条");
+		criteriaArticle.addChannel("爬虫滚动");
+		criteriaArticle.addChannel("爬虫八条");
+		articles = articleDaoImp.find(criteriaArticle, Direction.DESC, "time");
+		sbLock.writeLock().lock();
+		try{
+			this.sbArticles = articles;
+		}finally{
+			sbLock.writeLock().unlock();
+		}
+	}
+	
 	/**
 	 * 全部更新
 	 */
@@ -338,6 +358,7 @@ public class AppModel {
 		redeployComment(articleIds);
 		
 		//redeployChannels();
+		redeploySbArticles();
 	}
 	
 	public Map<String, List<String>> getStartPictures() {
@@ -438,6 +459,15 @@ public class AppModel {
 			return articleMap;
 		}finally{
 			articleMapLock.readLock().unlock();
+		}
+	}
+	
+	public List<Article> getSbArticles(){
+		sbLock.readLock().lock();
+		try{
+			return sbArticles;
+		}finally{
+			sbLock.readLock().unlock();
 		}
 	}
 

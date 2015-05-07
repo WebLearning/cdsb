@@ -266,11 +266,11 @@ public class DownLoadPicServiceImp implements DownLoadPicService {
 				//压缩800 * ？
 				compressPicUtils.compressByThumbnailator(new File(path.toFile().getAbsolutePath() + File.separator + singlePicUrl.substring(singlePicUrl.lastIndexOf("/"))),
 														 new File(pathMid.toFile().getAbsoluteFile() + File.separator + singlePicUrl.substring(singlePicUrl.lastIndexOf("/")))
-				 										 , 1080, 0, 0.9, true);
+				 										 , 1080, 0, 1.0, true);
 				//压缩 200 * 150
 				compressPicUtils.compressByThumbnailator(new File(path.toFile().getAbsolutePath() + File.separator + singlePicUrl.substring(singlePicUrl.lastIndexOf("/"))),
 						 new File(pathSim.toFile().getAbsoluteFile() + File.separator + singlePicUrl.substring(singlePicUrl.lastIndexOf("/")))
-						 , 200, 150, 0.8, false);
+						 , 400, 300, 1.0, false);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

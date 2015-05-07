@@ -29,6 +29,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.codehaus.jackson.map.DeserializationConfig; 
+import org.json.JSONObject;
 
 import com.shangbao.model.persistence.User;
 import com.shangbao.remotemodel.ResponseModel;
@@ -242,6 +243,10 @@ public class UserIdentifyService {
 	public ResponseModel identifyRemoteUser(String account, String passwd, int accountType){
 		String result = restTemplate.getForObject(remoteUrl + "userMatch/" + account + "/" + passwd + "/" + accountType, String.class);
 		System.out.println(result);
+		JSONObject object = new JSONObject(result);
+		if(object.getString("ResultMsg").equals("userMatch fail")){
+			return null;
+		}
 		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {

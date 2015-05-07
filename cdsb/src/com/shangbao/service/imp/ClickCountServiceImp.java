@@ -168,5 +168,9 @@ public class ClickCountServiceImp implements ClickCountService{
 		return list;
 	}
 	
-	
+	public void service(){
+		count24H();
+		count72H();
+		countAll();
+	}
 }

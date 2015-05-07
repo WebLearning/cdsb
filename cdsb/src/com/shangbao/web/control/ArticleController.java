@@ -469,10 +469,10 @@ public class ArticleController {
 					//拷贝成中图
 					Files.copy(new File(filePath + File.separator + fileName).toPath(), new File(filePathMid + File.separator + fileName).toPath());
 				}else{
-					compressPicUtils.compressByThumbnailator(new File(filePath + File.separator + fileName), new File(filePathMid + File.separator + fileName), 1080, 0, 0.8, true);
+					compressPicUtils.compressByThumbnailator(new File(filePath + File.separator + fileName), new File(filePathMid + File.separator + fileName), 1080, 0, 1.0, true);
 				}
 				//压缩200 * 150
-				compressPicUtils.compressByThumbnailator(new File(filePath + File.separator + fileName), new File(filePathSim + File.separator + fileName), 200, 150, 0.8, true);
+				compressPicUtils.compressByThumbnailator(new File(filePath + File.separator + fileName), new File(filePathSim + File.separator + fileName), 400, 300, 1.0, true);
 				returnString = path.toString().split("cdsb")[1] + File.separator + "mid"  + File.separator + fileName;
 //				System.out.println(returnString);
 				return localhostString + returnString.replaceAll("\\\\", "/");
