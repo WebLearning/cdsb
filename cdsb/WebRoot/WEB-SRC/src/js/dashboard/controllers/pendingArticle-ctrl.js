@@ -421,7 +421,7 @@ angular.module("Dashboard").controller("pendingArticleCtrl", ["$scope","$http", 
 
     //添加图片到ueditor内容
     $scope.addImgToEditorContent=function(url){
-        var text='<img src="'+url+'">';
+        var text='<p style="text-align: center;"><img src="'+url+'" style="width:330px;height:250px;"></p>';
         $scope.articleData.content=text+$scope.articleData.content;
         $scope.$apply();//相当于刷新一下scope 不然内容加不上
     };
