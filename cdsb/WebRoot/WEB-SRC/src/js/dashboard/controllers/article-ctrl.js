@@ -465,7 +465,7 @@ angular.module("Dashboard").controller("articleCtrl", ["$scope","$http", functio
 //        UE.getEditor('editor').setContent('{'+picUrl+'}',true);
 //        UE.getEditor('editor').focus();
 //        UE.getEditor('editor').execCommand('inserthtml','{'+picUrl+'}');
-        var text='<p style="text-align: center;"><img src="'+picUrl+'" style="width:330px;height:250px;"></p>';
+        var text='<p style="text-align: center;"><img src="'+picUrl+'" style="width:330px;"></p>';
 //        test(text);
 //        function CheckScopeBeforeApply() {
 //            if(!($scope.$phase)) {

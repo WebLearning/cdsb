@@ -351,7 +351,7 @@ angular.module("Dashboard").controller("crawlerPictureViewCtrl",["$scope","$http
     };
     $scope.addPictureToEditor=function(picUrl){
         //console.log(picUrl);
-        var text='<p style="text-align: center;"><img src="'+picUrl+'" style="width:330px;height:250px;"></p>';
+        var text='<p style="text-align: center;"><img src="'+picUrl+'" style="width:330px;"></p>';
         $scope.articleData.content=$scope.articleData.content+text;
 //        $scope.$apply();//相当于刷新一下scope 不然内容加不上
     };
@@ -524,7 +524,7 @@ angular.module("Dashboard").controller("crawlerPictureViewCtrl",["$scope","$http
 
     //添加图片到ueditor内容
     $scope.addImgToEditorContent=function(url){
-        var text='<p style="text-align: center;"><img src="'+url+'" style="width:330px;height:250px;"></p>';
+        var text='<p style="text-align: center;"><img src="'+url+'" style="width:330px;"></p>';
         $scope.articleData.content=$scope.articleData.content+text;
         $scope.$apply();//相当于刷新一下scope 不然内容加不上
     };
