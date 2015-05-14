@@ -11,12 +11,15 @@ import com.shangbao.model.persistence.Article;
  * @author yangyi
  */
 public class CdsbModel {
-	public int ResultCode;
-	public String ResultMsg;
+	public int ResultCode = 0;
+	public String ResultMsg = "";
 	public NewsData data;
 	private SimpleDateFormat dft = new SimpleDateFormat("yyyy/MM/dd");
 	
 	public void addHotArticle(Article article){
+		if(data == null){
+			data = new NewsData();
+		}
 		if(data.Hot == null){
 			data.Hot = new ArrayList<NewsModel>();
 		}
@@ -28,10 +31,13 @@ public class CdsbModel {
 		model.ImgeUrl = article.getPicturesUrl().isEmpty() ? "" : article.getPicturesUrl().get(0);
 		model.NewsDate = dft.format(article.getTime());
 		model.SortTime = article.getTime();
-		model.CommentsCount = "" + article.getCrawlerCommendsPublish() + article.getNewsCommendsPublish();
+		model.CommentsCount = article.getCrawlerCommendsPublish() + article.getNewsCommendsPublish() + "";
 		data.Hot.add(model);
 	}
 	public void addNormalArticle(Article article){
+		if(data == null){
+			data = new NewsData();
+		}
 		if(data.Normal == null){
 			data.Normal = new ArrayList<NewsModel>();
 		}
@@ -43,13 +49,13 @@ public class CdsbModel {
 		model.ImgeUrl = article.getPicturesUrl().isEmpty() ? "" : article.getPicturesUrl().get(0);
 		model.NewsDate = dft.format(article.getTime());
 		model.SortTime = article.getTime();
-		model.CommentsCount = "" + article.getCrawlerCommendsPublish() + article.getNewsCommendsPublish();
+		model.CommentsCount = article.getCrawlerCommendsPublish() + article.getNewsCommendsPublish() + "";
 		data.Normal.add(model);
 	}
 }
 class NewsData{
-	public List<NewsModel> Hot;
-	public List<NewsModel> Normal;
+	public List<NewsModel> Hot = null;
+	public List<NewsModel> Normal = null;
 }
 class NewsModel{
 	public String NewsID;

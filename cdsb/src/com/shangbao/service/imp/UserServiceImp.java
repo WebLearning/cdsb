@@ -118,9 +118,9 @@ public class UserServiceImp implements UserService {
 	@Override
 	public User updateUser(User criteriaUser, User updateUser) {
 		Update update = new Update();
-		if(updateUser.getUsername() != null){
-			update.set("name", updateUser.getUsername());
-		}
+//		if(updateUser.getUsername() != null){
+//			update.set("name", updateUser.getUsername());
+//		}
 		if(updateUser.getAvatar() != null){
 			update.set("avatar", updateUser.getAvatar());
 		}

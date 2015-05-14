@@ -3,6 +3,7 @@ package com.shangbao.phone.control;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -24,18 +25,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +61,7 @@ import com.shangbao.model.persistence.Article;
 import com.shangbao.model.persistence.User;
 import com.shangbao.model.show.SingleCommend;
 import com.shangbao.service.ReadLogService;
+import com.shangbao.service.UserService;
 import com.shangbao.utils.CompressPicUtils;
 
 /**
@@ -82,6 +81,31 @@ public class AppController {
 	private CompressPicUtils compressPicUtils;
 	@Resource
 	private ReadLogService readLogServiceImp;
+	@Resource
+	private UserService userServiceImp;
+	
+	
+	@RequestMapping(value="/authinfo/{udid:true|false}/{remember:true|false}", method=RequestMethod.GET, produces={"text/html;charset=UTF-8"})
+	@ResponseBody
+	public String getAuthInfo(@PathVariable("udid") String udidTag, @PathVariable("remember") String logTag){
+		StringBuffer buffer = new StringBuffer();
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmm");
+		if(udidTag.equals("true")){
+			buffer.append("1");
+		}else{
+			buffer.append("0");
+		}
+		if(logTag.equals("true")){
+			buffer.append("1");
+		}else{
+			buffer.append("0");
+		}
+		String code = sdf.format(new Date()) + RandomStringUtils.randomAlphabetic(10);
+		buffer.append(code);
+		String encoded = DigestUtils.sha1Hex(buffer.toString() + "cdsb");
+		buffer.append(encoded);
+		return buffer.toString();
+	}
 	
 	@RequestMapping(value="/phoneinfo", method=RequestMethod.POST)
 	@ResponseBody
@@ -363,6 +387,28 @@ public class AppController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
 			logs.add(sdf.format(new Date()) + "" + user.getUid() + " " + user.getName() + " 创建");
 			article.setLogs(logs);
+			
+			String fileName = article.getPicturesUrl().get(0);
+			if(fileName != null){
+				fileName = fileName.substring(fileName.lastIndexOf("/"));
+				Properties props = new Properties();
+				try{
+					props=PropertiesLoaderUtils.loadAllProperties("config.properties");
+					Path logPath = Paths.get(props.getProperty("pictureDir") + File.separator +  "userPic" + File.separator + "Log.txt");
+					if(Files.notExists(logPath)){
+						if(Files.notExists(logPath.getParent())){
+							Files.createDirectories(logPath.getParent());
+						}
+						Files.createFile(logPath);
+					}
+					PrintWriter writer = new PrintWriter(new FileWriter(logPath.toFile(), true));
+					writer.println(article.getTitle() + " | " + sdf.format(new Date()) + " | " + user.getName() + " | " + user.getId() + " | " + (user.getPhone() == null ? "null" : user.getPhone()) + " | " + fileName);
+					writer.flush();
+					writer.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
 		}
 		article.setTime(new Date());
 		appService.postPictures(article);
@@ -374,6 +420,10 @@ public class AppController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public String uploadPicture(@RequestParam(value = "file", required = true) MultipartFile file, @PathVariable("userId") long userId) {
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		User criteriaUser = new User();
+		criteriaUser.setId(userId);
+		User user = userServiceImp.findOne(criteriaUser);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmm");
 		String returnPath = "";
 		System.out.println("upload done!");
@@ -408,13 +458,14 @@ public class AppController {
 				FileOutputStream fos = new FileOutputStream(fileURL + File.separator + fileNameString);
 				fos.write(bytes); // 写入文件
 				fos.close();
+				
 				//压缩800*？
 				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 1080, 0, 1.0, true);
 				//压缩200 * 150
 				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 400, 300, 1.0, true);
 				
 				returnPath = path.toString().split("cdsb")[1] + File.separator + "mid" + File.separator + fileNameString;
-				System.out.println(returnPath);
+//				System.out.println(returnPath);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -467,13 +518,14 @@ public class AppController {
 				FileOutputStream fos = new FileOutputStream(fileURL + File.separator + fileNameString);
 				fos.write(bytes); // 写入文件
 				fos.close();
+				
 				//压缩800*？
 				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 1080, 0, 0.9, true);
 				//压缩200 * 150
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 200, 150, 0.8, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 400, 300, 0.8, true);
 				
 				returnPath = path.toString().split("cdsb")[1] + File.separator + "mid" + File.separator + fileNameString;
-				System.out.println(returnPath);
+//				System.out.println(returnPath);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

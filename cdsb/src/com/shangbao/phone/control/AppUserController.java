@@ -174,6 +174,9 @@ public class AppUserController {
 		User criteriaUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		postUser.setUid(criteriaUser.getUid());
 		user = userServiceImp.updateUser(criteriaUser, postUser);
+		user.setPasswd(null);
+		user.setPhone(null);
+		user.setName(null);
 		if(user != null){
 			userIdentifyService.updateUser(user);
 		}
@@ -196,27 +199,6 @@ public class AppUserController {
 			User updateUser = new User();
 			updateUser.setUid(user.getUid());
 			updateUser.setPasswd(passwdModel.getNewPasswd());
-			if(user.getName() != null){
-				updateUser.setName(user.getName());
-			}
-			if(user.getAvatar() != null){
-				updateUser.setAvatar(user.getAvatar());
-			}
-			if(user.getEmail() != null){
-				updateUser.setEmail(user.getEmail());
-			}
-			if(user.getSex() == 0 || user.getSex() == 1){
-				updateUser.setSex(user.getSex());
-			}
-			if(user.getBirthday() != null){
-				updateUser.setBirthday(user.getBirthday());
-			}
-			if(user.getQq() != null){
-				updateUser.setQq(user.getQq());
-			}
-			if(user.getPhone() != null){
-				updateUser.setPhone(user.getPhone());
-			}
 			if(!userServiceImp.updatePasswd(user, oldPasswd, newPasswd)){
 				model.setResultCode(0);
 				model.setResultMsg("密码错误");

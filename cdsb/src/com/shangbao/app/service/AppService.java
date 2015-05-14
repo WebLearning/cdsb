@@ -19,6 +19,7 @@ import com.shangbao.app.model.AppChannelModel;
 import com.shangbao.app.model.AppModel;
 import com.shangbao.app.model.AppPictureModel;
 import com.shangbao.app.model.ArticleInfo;
+import com.shangbao.app.model.CdsbArticle;
 import com.shangbao.app.model.CdsbModel;
 import com.shangbao.app.model.ColumnPageModel;
 import com.shangbao.app.model.FrontPageModel;
@@ -256,6 +257,22 @@ public class AppService {
 		return articleInfo;
 	}
 	
+	public CdsbArticle getCdsbArticle(long articleId){
+		CdsbArticle cdsbArticle = new CdsbArticle();
+		if(!appModel.getArticleMap().isEmpty()){
+			if(appModel.getArticleMap().containsKey(articleId)){
+				Article article = appModel.getArticleMap().get(articleId);
+				cdsbArticle = new CdsbArticle(article);
+			}else{
+				Article articleInMongo = articleServiceImp.findOne(articleId);
+				if(articleInMongo != null){
+					cdsbArticle = new CdsbArticle(articleInMongo);
+				}
+			}
+		}
+		return cdsbArticle;
+	}
+	
 	/**
 	 * 获取为商报遗留app提供的文章
 	 * @param sortTime
@@ -263,7 +280,25 @@ public class AppService {
 	 */
 	public CdsbModel getCdsbModel(long sortTime){
 		CdsbModel model = new CdsbModel();
-		
+		List<Article> articles = appModel.getSbArticles();
+		int i = 0;
+		int j = 0;
+		for(Article article : articles){
+			if(i < 4){
+				model.addHotArticle(article);
+				i ++;
+			}else{
+				if(j > 20)
+					break;
+				if(sortTime == 0 && j < 20){
+					model.addNormalArticle(article);
+					j ++;
+				}else if(article.getTime().getTime() < sortTime && j < 20){
+					model.addNormalArticle(article);
+					j ++;
+				}
+			}
+		}
 		return model;
 	}
 	
@@ -375,6 +410,7 @@ public class AppService {
 					for(Article article : articles){
 						String articleTitle = article.getTitle();
 						if(article.getChannelIndex().isEmpty() || !article.getChannelIndex().containsKey(channelChName)){
+							articleDaoImp.fixArticle(article.getId());
 							continue;
 						}
 						backChannelModel.addTitle(articleTitle, article.getId(), i, article.getChannelIndex().get(channelChName) > (Integer.MAX_VALUE/2));
@@ -537,17 +573,18 @@ public class AppService {
 //				css = "kuaipai.css";
 //			}
 			SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd");
-			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
+			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div ng-show=\"visible\" style=\"position:fixed; z-index:10000;width: 99.5%;height: 60px;top:0px\"><a href=\"http://app.cdsb.com/\"><div style=\"width: 100%;height: 60px;float: left; background:#EA0000;color:#FFFFFF;float: left; text-align:left; line-height:48px;\"><div style=\"margin: 8px 20px;;float: left;\"><span style=\"display:block; font-size:30px; text-align:left; font-family: Helvetica\"><b>成都商报</b></span></div><div style=\"margin: 9px 11px;float: right; background:#EA0000; color:#FFFFFF;text-align:center;\"><span style=\"line-height:22px; display:block;  font-size:20px;\">立即<br/>下载</span></div></div></a></div><div ng-show=\"visible\"><br/><br/><br/><br/></div>";
+			String duxq2 = "<div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-CN\"><head profile=\"http://gmpg.org/xfn/11\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width\" /> <title>");
-			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报新闻客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/debuggap.js\"></script>");
+			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报新闻客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script>");
 			html.append("<link href=\" " + localhostString +  "/WEB-SRC/videojs/video-js.css\" rel = \"stylesheet\" type=\"text/css\"><script src = \" " + localhostString + "/WEB-SRC/videojs/video.js\"></script><script>videojs.options.flash.swf = \" " + localhostString + "/WEB-SRC/videojs/video-js.swf\";</script>");//vedio-js
-			html.append("</head><body class=\"classic-wptouch-bg\"> " +  " <input type=\"hidden\" name=\"id\" value=" + article.getId() + "/> <div class=\"content single\"> <div class=\"post\"> <a class=\"sh2\">");
+			html.append("</head><body class=\"classic-wptouch-bg\"> " + duxq +  " <input type=\"hidden\" name=\"id\" value=" + article.getId() + "/> <div class=\"content single\"> <div class=\"post\"> <a class=\"sh2\">");
 			html.append(article.getTitle().replace("\\n", "<br/>") + "</a><div style=\"font-size:15px; padding: 5px 0;\"></div><div class=\"single-post-meta-top\">");
 			html.append((article.getAuthor() == null ? "" : article.getAuthor()) + "&nbsp&nbsp" + (article.getTime() == null ? "" : format.format(article.getTime())));
 			html.append("</div><div style=\"margin-top:10px; border-top:1px solid #d8d8d8; height:1px; background-color:#fff;\"></div> <div id=\"singlentry\" class=\"full-justified\">");
 			html.append(addHerf(article.getContent()));
-			html.append("<p>&nbsp;</p> " + duxq + "</div></div></div> <div id=\"footer\"><p>成都商报</p></div></body></html>");
+			html.append("<p>&nbsp;</p> " + duxq2 + "</div></div></div> <div id=\"footer\"><p>成都商报</p></div></body></html>");
 			return html.toString();
 		}else{
 			//是外联文章

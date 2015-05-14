@@ -85,11 +85,23 @@ public class UserIdentifyService {
 	public UserDetails identifyUser(String userName, String password, int type, HttpServletRequest request, HttpServletResponse response){
 		UserDetails userDetails;
 		if(1 == type){
-			userDetails = myUserDetailsService.loadUserByPhone(userName);
+//			userDetails = myUserDetailsService.loadUserByPhone(userName);
+			User criteriaUser = new User();
+			criteriaUser.setPhone(userName);
+			criteriaUser.setPasswd(passwordEncoder.encodePassword(password, null));
+			userDetails = userServiceImp.findOne(criteriaUser);
 		}else if(3 == type){
-			userDetails = myUserDetailsService.loadUserByEmail(userName);
+//			userDetails = myUserDetailsService.loadUserByEmail(userName);
+			User criteriaUser = new User();
+			criteriaUser.setEmail(userName);
+			criteriaUser.setPasswd(passwordEncoder.encodePassword(password, null));
+			userDetails = userServiceImp.findOne(criteriaUser);
 		}else {
-			userDetails = myUserDetailsService.loadUserByUsername(userName);
+//			userDetails = myUserDetailsService.loadUserByUsername(userName);
+			User criteriaUser = new User();
+			criteriaUser.setName(userName);
+			criteriaUser.setPasswd(passwordEncoder.encodePassword(password, null));
+			userDetails = userServiceImp.findOne(criteriaUser);
 		}
 		String password_Encoded = passwordEncoder.encodePassword(password, null);
 		if(userDetails != null && password_Encoded.equals(userDetails.getPassword())){
@@ -167,24 +179,34 @@ public class UserIdentifyService {
 		if(user.getQq() != null)
 			userMap.add("qq", user.getQq());
 		String responseUser = restTemplate.postForObject(remoteUrl + "addUser", userMap, String.class);
-		System.out.println(responseUser);
+//		System.out.println(responseUser);
 		if(responseUser.toCharArray()[14] == '0'){
 			return true;
 		}
 		return false;
 	}
 	
+//	public void testUpdate(){
+//		MultiValueMap<String, Object> userMap = new LinkedMultiValueMap<>();
+//		userMap.add("uid", "399");
+//		userMap.add("phone", "00998877");
+//		userMap.add("avatar", "lalala");
+////		userMap.add("psw", "123123");
+//		String responseUser = restTemplate.postForObject(remoteUrl + "editUser", userMap, String.class);
+//		System.out.println(responseUser);
+//	}
+	
 	public boolean updateUser(User user){
-		if(user.getUid() > 0 && user.getPasswd() != null){
+		if(user.getUid() > 0){
 			MultiValueMap<String, Object> userMap = new LinkedMultiValueMap<>();
 			userMap.add("uid", user.getUid().toString());
-			if(user.getPasswd() != null){
+			if(user.getPasswd() != null && user.getPasswd() != ""){
 				userMap.add("psw", user.getPasswd());
 			}
-			if(user.getName() != null){
+			if(user.getName() != null && user.getName() != ""){
 				userMap.add("nickname", user.getName());
 			}
-			if(user.getAvatar() != null){
+			if(user.getAvatar() != null && user.getAvatar() != ""){
 				userMap.add("avatar", user.getAvatar());
 			}
 			if(user.getEmail() != null){
@@ -203,7 +225,7 @@ public class UserIdentifyService {
 				userMap.add("phone", user.getPhone());
 			}
 			String responseUser = restTemplate.postForObject(remoteUrl + "editUser", userMap, String.class);
-			System.out.println(responseUser);
+//			System.out.println(responseUser);
 			if(responseUser.toCharArray()[14] == '0'){
 				return true;
 			}
@@ -213,7 +235,7 @@ public class UserIdentifyService {
 	
 	public boolean userExist(String account, int accountType){
 		String result = restTemplate.getForObject(remoteUrl + "isExists/" + account + "/" + accountType, String.class);
-		System.out.println(result);
+//		System.out.println(result);
 		if(result.substring(14, 15).equals("1"))
 			return false;
 		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
@@ -242,7 +264,7 @@ public class UserIdentifyService {
 	
 	public ResponseModel identifyRemoteUser(String account, String passwd, int accountType){
 		String result = restTemplate.getForObject(remoteUrl + "userMatch/" + account + "/" + passwd + "/" + accountType, String.class);
-		System.out.println(result);
+//		System.out.println(result);
 		JSONObject object = new JSONObject(result);
 		if(object.getString("ResultMsg").equals("userMatch fail")){
 			return null;

@@ -3,6 +3,7 @@ package com.shangbao.task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -141,6 +142,25 @@ public class KuaipaiPKTask {
 						if(Files.exists(Paths.get(filePath))){
 							compressPicUtils.setWaterMark(new File(midFilePath), new File(filePath), new File(waterMark), 1.0f);
 						}
+						//换名字
+						String newPic;
+						String newMidFilePath;
+						String newSimFilePath;
+						newPic = pic.substring(0, pic.lastIndexOf(".")) + "zan" + pic.substring(pic.lastIndexOf("."));
+						newMidFilePath = midFilePath.substring(0, midFilePath.lastIndexOf(".")) + "zan" + midFilePath.substring(midFilePath.lastIndexOf("."));
+						newSimFilePath = filePath.substring(0, filePath.lastIndexOf(".")) + "zan" + filePath.substring(filePath.lastIndexOf("."));
+//						new File(midFilePath).renameTo(new File(newMidFilePath));
+						if(Files.notExists(Paths.get(newMidFilePath))){
+							try {
+								Files.copy(Paths.get(midFilePath), Paths.get(newMidFilePath));
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						new File(filePath).renameTo(new File(newSimFilePath));
+						topArticle.getPicturesUrl().set(0, newPic);
+						articleDaoImp.update(topArticle);
 					}
 				}
 			}

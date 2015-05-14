@@ -1,9 +1,11 @@
 function readAndZanCtrl($scope, $http) {
-
+	$scope.visible = false;		
 	// 通过解析当前url获取articleID
 	$scope.url = {
 		value : window.location.href,
 	};
+	
+//	var oldUrl = "http://www.cdsb.mobi/cdsb/app/ios/articledetail/20134";
 	var oldUrl = $scope.url.value;
 	var articleID =0;
 	var flag = oldUrl.lastIndexOf("articledetail")+14;
@@ -17,7 +19,8 @@ function readAndZanCtrl($scope, $http) {
 	
 	//页面初始化——关于通过UDID决定是否显示app下载链接 以及向后台传送UDID
 	var cookieName_udid = getUDID("UDID");
-	if(cookieName_udid==null){
+	
+	if(cookieName_udid=="false"){
 		//获取不到udid 为网页访问
 		$scope.visible = true;
 	}else{
@@ -33,17 +36,29 @@ function readAndZanCtrl($scope, $http) {
 
 	var url_read_load = basic + "js/getclick/" + articleID;
 	var url_read_add="";//根据
-	if(cookieName_udid==null){
+	if(cookieName_udid=="false"){
 		url_read_add = basic + "js/addclick/" + articleID+"/0";
 	}else{
 		url_read_add = basic + "js/addclick/" + articleID+"/"+cookieName_udid;
 	}
 	var pictureBasic = oldUrl.substring(0, oldUrl.lastIndexOf("sb/app")+3);
 	$scope.pictureUrl = pictureBasic + "WEB-SRC/src/img/zan.png";
-			
+		
+	var url_newID=basic+"authinfo/";
+	//处理是否存入新cookie问题
+	var newIDCheck = getCookie("AuthStr");  
+	if(newIDCheck=="false"){
+		var loginCookie = getCookie("SPRING_SECURITY_REMEMBER_ME_COOKIE");
+		var postStr = cookieName_udid+"/"+loginCookie;
+		console.log(url_newID+postStr);
+		$http.get(url_newID+postStr).success(function(response) {
+			addCookie("AuthStr", response, 24);
+		});
+	}
+	
 	//页面初始化——关于点赞模块图片选择
 	var cookieName_zan = getCookie(articleID + "zan");
-	if (cookieName_zan == null) {
+	if (cookieName_zan == "false") {
 		$scope.pictureUrl = pictureBasic + "WEB-SRC/src/img/zan.png";
 		console.log("not not");
 	} else if (cookieName_zan == "true") {
@@ -64,7 +79,7 @@ function readAndZanCtrl($scope, $http) {
 	//页面初始化——关于阅读数模块
 	$scope.clickNum = 0;
 	var cookieName_read = getCookie(articleID + "read");
-	if (cookieName_read == null) {
+	if (cookieName_read == "false") {
 		console.log(url_read_add);
 		// $scope.clickNum = Number(Number($scope.clickNum) + 1);
 		$http.put(url_read_add).success(function(response) {
@@ -124,22 +139,24 @@ function getCookie(name) {
 			return "true";
 		}
 	}
-	return null;
+	return "false";
 };
+
 
 function getUDID(name) {
 	console.log("get udid ----come in");
 	var strCookie = document.cookie;
-	console.log(strCookie);
+//	alert(strCookie);
 	var arrCookie = strCookie.split("; ");
 	for (var i = 0; i < arrCookie.length; i++) {
 		var arr = arrCookie[i].split("=");
 		if (arr[0] == name) {
 			console.log(arr[0]);
 			console.log(arr[1]);
+//			addCookie("newID", "testtest", 999);
 			return arr[1];
 		}
 	}
-	return null;
+	return "false";
 };
 

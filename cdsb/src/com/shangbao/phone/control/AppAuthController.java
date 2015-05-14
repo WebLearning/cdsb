@@ -118,6 +118,21 @@ public class AppAuthController {
 		return appResponseModel;
 	}
 	
+//	@RequestMapping(value="/testregist")
+//	public void test(){
+//		User user = new User();
+//		user.setName("testYY2");
+//		user.setPasswd("123123");
+//		user.setPhone("00998877");
+//		user.setAvatar("test");
+//		userIdentifyService.addUser(user);
+//	}
+//	
+//	@RequestMapping(value="/testupdate1")
+//	public void test2(){
+//		userIdentifyService.testUpdate();
+//	}
+	
 	
 	/**
 	 * 注册，服务器验证手机验证码

@@ -209,6 +209,43 @@ public class ArticleDaoImp implements ArticleDao {
 		}
 		mongoTemplate.save(article);
 	}
+	
+	@Override
+	public void fixArticle(long articleid){
+		Article article = mongoTemplate.findById(articleid, Article.class);
+		if(!article.getState().equals(ArticleState.Published) || article.getChannel().isEmpty()){
+			return;
+		}
+		for(String channel : article.getChannel()){
+			if(!article.getChannelIndex().containsKey(channel)){
+				Query channelQuery = new Query();
+				Criteria channelCriteria = Criteria.where("state").is(
+						ArticleState.Published.toString());
+				channelQuery.addCriteria(channelCriteria);
+				channelQuery.addCriteria(Criteria.where("channel").is(channel));
+				channelQuery.addCriteria(Criteria.where(
+						"channelIndex." + channel).lt(
+						Integer.MAX_VALUE / 2));
+				channelQuery.with(new Sort(Direction.DESC,
+						"channelIndex." + channel));
+				channelQuery.limit(1);
+				List<Article> articleList = mongoTemplate.find(
+						channelQuery, Article.class);
+				if (articleList != null
+						&& !articleList.isEmpty()
+						&& articleList.get(0).getChannelIndex()
+								.get(channel) != null) {
+					article.getChannelIndex().put(
+							channel,
+							articleList.get(0).getChannelIndex()
+									.get(channel) + 1);
+				} else {
+					article.getChannelIndex().put(channel, 1);
+				}
+				mongoTemplate.save(article);
+			}
+		}
+	}
 
 	@Override
 	public boolean update(Article criteriaArticle, Article article) {
