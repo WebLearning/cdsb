@@ -105,11 +105,17 @@ angular.module("Dashboard").controller("publishedArticleCtrl", ["$scope","$http"
             alert("分类不能为空");
             $scope.closeOver();
         }else if($scope.articleData.channel.length!=0){
-            $http.post(url,jsonString).success(function(){
-                alert("推送成功");
-                $('#send_published').modal('toggle');
-                $scope.clearSendMessageData();
-                $scope.closeOver();
+            $http.post(url,jsonString).success(function(data){
+                console.log(data);
+                if(data=="推送成功"){
+                    alert(data);
+                    $('#send_published').modal('toggle');
+                    $scope.clearSendMessageData();
+                    $scope.closeOver();
+                }else{
+                    alert(data);
+                    $scope.closeOver();
+                }
             });
         }
     };
