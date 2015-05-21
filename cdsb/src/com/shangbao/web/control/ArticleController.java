@@ -384,10 +384,12 @@ public class ArticleController {
 	
 	@RequestMapping(value="/push", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void pushtest(@RequestBody PushModel pushModel){
+	@ResponseBody
+	public String pushtest(@RequestBody PushModel pushModel){
 		if(pushModel.getArticleId() != 0 && pushModel.getMessage() != null){
-			appPushService.push(pushModel.getMessage(), pushModel.getArticleId());
+			return appPushService.push(pushModel.getMessage(), pushModel.getArticleId());
 		}
+		return "推送信息不能为空";
 	}
 	
 	@RequestMapping(value="/timepush/{time:[\\d]+}", method=RequestMethod.POST)

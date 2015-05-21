@@ -3,6 +3,7 @@ package com.shangbao.app.service;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Service;
 
@@ -41,14 +43,19 @@ public class AppService {
 	
 	private final String appUrlPrefix = "/{phoneType}/";
 	private String localhost;
+	private String salt;
 	
 	public AppService(){
 		localhost = "http://www.cdsb.mobi/";
+		salt = "cdsbbsdc123321";
 		Properties props;
 		try {
 			props = PropertiesLoaderUtils.loadAllProperties("config.properties");
-			if(!props.getProperty("localhost").isEmpty()){
+			if(props.getProperty("localhost") != null && !props.getProperty("localhost").isEmpty()){
 				localhost = props.getProperty("localhost");
+			}
+			if(props.getProperty("salt") != null && props.getProperty("salt") != ""){
+				salt = props.getProperty("salt");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -204,11 +211,11 @@ public class AppService {
 	 * 获取一篇文章的HTML
 	 * @return
 	 */
-	public AppHtml getNewsHtml(Long articleId, String fromIp){
+	public AppHtml getNewsHtml(Long articleId, String fromIp, String udid, String uid){
 		AppHtml appHtml = new AppHtml();
 		if(!appModel.getArticleMap().isEmpty()){
 			if(appModel.getArticleMap().containsKey(articleId)){
-				appHtml.html = articleToHtml(appModel.getArticleMap().get(articleId));
+				appHtml.html = articleToHtml(appModel.getArticleMap().get(articleId), udid, uid);
 				appModel.addClick(articleId, fromIp);
 				appHtml.articleId = articleId;
 			}else{
@@ -216,7 +223,7 @@ public class AppService {
 				if(articleInMongo != null){
 					//appModel.getArticleMap().put(articleId, articleInMongo);
 					//appHtml.html = articleInMongo.getContent();
-					appHtml.html = articleToHtml(articleInMongo);
+					appHtml.html = articleToHtml(articleInMongo, udid, uid);
 //					appHtml.articleId = articleId;
 //					Update update = new Update();
 //					update.inc("clicks", 1);
@@ -557,7 +564,13 @@ public class AppService {
 	}
 
 	
-	private String articleToHtml(Article article){
+	private String articleToHtml(Article article, String udid, String uid){
+		if(uid == null){
+			uid = "0";
+		}
+		if(udid == null){
+			udid = "0";
+		}
 		if(article.getOutSideUrl() == null || article.getOutSideUrl().equals("")){
 			//不是外链文章
 			String localhostString = "";
@@ -573,7 +586,7 @@ public class AppService {
 //				css = "kuaipai.css";
 //			}
 			SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd");
-			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div ng-show=\"visible\" style=\"position:fixed; z-index:10000;width: 99.5%;height: 60px;top:0px\"><a href=\"http://app.cdsb.com/\"><div style=\"width: 100%;height: 60px;float: left; background:#EA0000;color:#FFFFFF;float: left; text-align:left; line-height:48px;\"><div style=\"margin: 8px 20px;;float: left;\"><span style=\"display:block; font-size:30px; text-align:left; font-family: Helvetica\"><b>成都商报</b></span></div><div style=\"margin: 9px 11px;float: right; background:#EA0000; color:#FFFFFF;text-align:center;\"><span style=\"line-height:22px; display:block;  font-size:20px;\">立即<br/>下载</span></div></div></a></div><div ng-show=\"visible\"><br/><br/><br/><br/></div>";
+			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div ng-show=\"visible\" style=\"position:fixed; z-index:10000;width: 99.5%;height: 60px;top:0px\"><a href=\"http://app.cdsb.com/download.php\"><div style=\"width: 100%;height: 60px;float: left; background:#EA0000;color:#FFFFFF;float: left; text-align:left; line-height:48px;\"><div style=\"margin: 8px 20px;;float: left;\"><span style=\"display:block; font-size:30px; text-align:left; font-family: Helvetica\"><b>成都商报</b></span></div><div style=\"margin: 9px 11px;float: right; background:#EA0000; color:#FFFFFF;text-align:center;\"><span style=\"line-height:22px; display:block;  font-size:20px;\">立即<br/>下载</span></div></div></a></div><div ng-show=\"visible\"><br/><br/><br/><br/></div>";
 			String duxq2 = "<div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-CN\"><head profile=\"http://gmpg.org/xfn/11\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width\" /> <title>");
@@ -588,10 +601,12 @@ public class AppService {
 			return html.toString();
 		}else{
 			//是外联文章
+			String timeStamp = new Date().getTime() / 1000 + "";
 			StringBuilder html = new StringBuilder();
 			html.append("<html><head><title></title></head><body>");
 			html.append("<script language=\"javascript\">document.location = \"");
 			html.append((article.getOutSideUrl().startsWith("http://") || article.getOutSideUrl().startsWith("https://")) ? article.getOutSideUrl() : ("http://" + article.getOutSideUrl()));
+			html.append("?udid=" + udid + "&uid=" + uid + "&time=" + timeStamp + "&authcode=" + DigestUtils.sha1Hex(udid + uid + timeStamp + salt));
 			html.append("\"</script></body></html>");
 			//System.out.println(html);
 			return html.toString();

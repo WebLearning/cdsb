@@ -18,7 +18,7 @@ function readAndZanCtrl($scope, $http) {
 	//解析articleId end
 	
 	//页面初始化——关于通过UDID决定是否显示app下载链接 以及向后台传送UDID
-	var cookieName_udid = getUDID("UDID");
+	var cookieName_udid = getCookieValue("UDID");
 	
 	if(cookieName_udid=="false"){
 		//获取不到udid 为网页访问
@@ -45,15 +45,55 @@ function readAndZanCtrl($scope, $http) {
 	$scope.pictureUrl = pictureBasic + "WEB-SRC/src/img/zan.png";
 		
 	var url_newID=basic+"authinfo/";
+	
 	//处理是否存入新cookie问题
-	var newIDCheck = getCookie("AuthStr");  
-	if(newIDCheck=="false"){
-		var loginCookie = getCookie("SPRING_SECURITY_REMEMBER_ME_COOKIE");
-		var postStr = cookieName_udid+"/"+loginCookie;
-		console.log(url_newID+postStr);
+	var loginCookie = getCookieValue("SPRING_SECURITY_REMEMBER_ME_COOKIE");
+//	alert(loginCookie);	
+	var newIDCheck = getCookieValue("AuthStr"); 	
+	console.log(newIDCheck);
+	if(newIDCheck=="false"){		
+		var postStr = cookieName_udid+"/"+loginCookie;	
+//		alert(url_newID+postStr);	
 		$http.get(url_newID+postStr).success(function(response) {
-			addCookie("AuthStr", response, 24);
+			console.log("aaaaaaa"+response);
+			addCookie("AuthStr", response, 999);
 		});
+	}else{
+		var one = newIDCheck.substr(0,1);
+		var two = newIDCheck.substr(1,1);
+		var udidFlag=1;
+		var securityFlag=1;
+		if(cookieName_udid=="false"){
+			udidFlag=0;
+		}
+		if(loginCookie=="false"){
+			securityFlag=0;
+		}
+		
+		var lastDate= newIDCheck.substr(2,8);
+		var nowDate=new Date();
+		var year = Number(nowDate.getFullYear());
+		var month = Number(Number(nowDate.getMonth())+1);
+		if(month < 10){
+			month="0"+month;
+		}
+		var day = Number(nowDate.getDate());
+		if(day < 10){
+			day="0"+day;
+		}
+		var ddd=year+""+month+""+day;
+		console.log(one+" "+two+" "+lastDate);
+		console.log(udidFlag+" "+securityFlag+" "+ddd);
+		if((one==udidFlag)&&(two==securityFlag)&&(lastDate==ddd)){		
+			console.log("equal");	
+		}else{
+			var postStr = cookieName_udid+"/"+loginCookie;	
+//			alert(url_newID+postStr);
+			$http.get(url_newID+postStr).success(function(response) {
+				console.log(response);
+				addCookie("AuthStr", response, 999);
+			});
+		}
 	}
 	
 	//页面初始化——关于点赞模块图片选择
@@ -143,17 +183,16 @@ function getCookie(name) {
 };
 
 
-function getUDID(name) {
+function getCookieValue(name) {
 	console.log("get udid ----come in");
 	var strCookie = document.cookie;
-//	alert(strCookie);
+console.log(strCookie);
 	var arrCookie = strCookie.split("; ");
 	for (var i = 0; i < arrCookie.length; i++) {
 		var arr = arrCookie[i].split("=");
 		if (arr[0] == name) {
 			console.log(arr[0]);
 			console.log(arr[1]);
-//			addCookie("newID", "testtest", 999);
 			return arr[1];
 		}
 	}

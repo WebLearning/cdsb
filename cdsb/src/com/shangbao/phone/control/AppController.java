@@ -85,22 +85,25 @@ public class AppController {
 	private UserService userServiceImp;
 	
 	
-	@RequestMapping(value="/authinfo/{udid:true|false}/{remember:true|false}", method=RequestMethod.GET, produces={"text/html;charset=UTF-8"})
+	@RequestMapping(value="/authinfo/{udid}/{remember}", method=RequestMethod.GET, produces={"text/html;charset=UTF-8"})
 	@ResponseBody
 	public String getAuthInfo(@PathVariable("udid") String udidTag, @PathVariable("remember") String logTag){
 		StringBuffer buffer = new StringBuffer();
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmm");
-		if(udidTag.equals("true")){
-			buffer.append("1");
-		}else{
+		String randomString = "";
+		if(udidTag.equals("false")){
 			buffer.append("0");
-		}
-		if(logTag.equals("true")){
-			buffer.append("1");
+			randomString = RandomStringUtils.randomAlphabetic(8);
 		}else{
-			buffer.append("0");
+			buffer.append("1");
+			randomString = udidTag.length() >= 8 ? udidTag.substring(udidTag.length() - 8) : (udidTag + RandomStringUtils.randomAlphabetic(8 - udidTag.length()));
 		}
-		String code = sdf.format(new Date()) + RandomStringUtils.randomAlphabetic(10);
+		if(logTag.equals("false")){
+			buffer.append("0");
+		}else{
+			buffer.append("1");
+		}
+		String code = sdf.format(new Date()) + randomString + RandomStringUtils.randomAlphabetic(2);
 		buffer.append(code);
 		String encoded = DigestUtils.sha1Hex(buffer.toString() + "cdsb");
 		buffer.append(encoded);
@@ -113,6 +116,7 @@ public class AppController {
 		if(phoneinfo.getUdid() != null){
 			Cookie cookie = new Cookie("UDID", phoneinfo.getUdid());
 			cookie.setPath("/");
+//			cookie.setDomain(".cdsb.mobi");
 			response.addCookie(cookie);
 			phoneinfo.setMessage("SUCCESS");
 			return phoneinfo;
@@ -227,8 +231,24 @@ public class AppController {
 	@RequestMapping(value="/{phoneType}/articledetail/{articleId:[\\d]+}", method=RequestMethod.GET, produces={"text/html;charset=UTF-8"})
 	@ResponseBody
 	public String getNews(@PathVariable("articleId") long articleId, HttpServletRequest request){
-		
-		return appService.getNewsHtml(articleId, request.getRemoteAddr()).html;
+		SecurityContext context = (SecurityContext)request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+		String udid = null;
+		String uid = null;
+		if(context != null){
+			User user = (User)context.getAuthentication().getPrincipal();
+			if(user != null){
+				uid = user.getUid() + "";
+			}
+		}
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null){
+			for(Cookie cookie : cookies){
+				if(cookie.getName().equals("UDID")){
+					udid = cookie.getValue();
+				}
+			}
+		}
+		return appService.getNewsHtml(articleId, request.getRemoteAddr(), udid, uid).html;
 	}
 	
 	@RequestMapping(value="/{phoneType}/articleinfo/{articleId:[\\d]+}", method=RequestMethod.GET)
@@ -390,6 +410,8 @@ public class AppController {
 			
 			String fileName = article.getPicturesUrl().get(0);
 			if(fileName != null){
+				String picLocation = fileName.substring(0, fileName.indexOf("/mid/"));
+				picLocation = picLocation.substring(picLocation.lastIndexOf("/") + 1);
 				fileName = fileName.substring(fileName.lastIndexOf("/"));
 				Properties props = new Properties();
 				try{
@@ -402,13 +424,17 @@ public class AppController {
 						Files.createFile(logPath);
 					}
 					PrintWriter writer = new PrintWriter(new FileWriter(logPath.toFile(), true));
-					writer.println(article.getTitle() + " | " + sdf.format(new Date()) + " | " + user.getName() + " | " + user.getId() + " | " + (user.getPhone() == null ? "null" : user.getPhone()) + " | " + fileName);
+					writer.println(article.getTitle() + " | " + sdf.format(new Date()) + " | " + user.getName() + " | " + user.getId() + " | " + picLocation + " | " + (user.getPhone() == null ? "null" : user.getPhone()) + " | " + fileName);
 					writer.flush();
 					writer.close();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
+			}else{
+				return "未检测到图片";
 			}
+		}else{
+			return "未登录";
 		}
 		article.setTime(new Date());
 		appService.postPictures(article);
@@ -420,6 +446,9 @@ public class AppController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public String uploadPicture(@RequestParam(value = "file", required = true) MultipartFile file, @PathVariable("userId") long userId) {
+		if(file.getSize() == 7810){
+			return null;
+		}
 		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 		User criteriaUser = new User();
 		criteriaUser.setId(userId);
@@ -479,6 +508,9 @@ public class AppController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public String uploadPictureWithoutUserId(@RequestParam(value = "file", required = true) MultipartFile file) {
+		if(file.getSize() == 7810){
+			return null;
+		}
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmm");
 		String returnPath = "";
 		//User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

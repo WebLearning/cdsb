@@ -3,6 +3,7 @@ package com.shangbao.phone.control;
 import java.io.UnsupportedEncodingException;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -66,6 +67,8 @@ public class AppAuthController {
 			userDetails = userIdentifyService.identifyUser(user.getEmail(), user.getPasswd(), 3, request, response);
 		}
 		if(userDetails != null){
+			Cookie cookie = new Cookie("uid", ((User)userDetails).getUid() + "");
+			response.addCookie(cookie);
 			appResponseModel.setResultCode(1);
 			appResponseModel.setResultMsg("登录成功");
 		}else{

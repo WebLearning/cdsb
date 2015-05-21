@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -35,6 +36,7 @@ public class AppPushService {
 	
 	private RestTemplate restTemplate;
 	private String url = "https://api.jpush.cn/v3/push";
+	private String localhost = "http://www.cdsb.mobi/cdsb";
 	private String appKey;
 	private String masterSecret;
 	private String encoded;
@@ -47,6 +49,7 @@ public class AppPushService {
 			appKey = props.getProperty("push_appKey");
 			masterSecret = props.getProperty("push_masterSecret");
 			url = props.getProperty("push_URL");
+			localhost = props.getProperty("localhost");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,18 +70,33 @@ public class AppPushService {
 		System.out.println(result);
 	}
 	
-	public void push(String message, long newsId){
+	public String push(String message, long newsId){
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = new HttpPost(url);
+		String returnMessage = "";
 		try {
 			StringEntity s = new StringEntity(getJson(message, newsId), HTTP.UTF_8);
-			System.out.println(s);
+//			System.out.println(s);
 			s.setContentEncoding("utf-8");
 			s.setContentType("application/json");
 			post.addHeader("Authorization", "Basic " + encoded);
 			post.setEntity(s);
 			HttpResponse response = httpclient.execute(post);
-			System.out.println(EntityUtils.toString(response.getEntity()));
+			JSONObject object = new JSONObject(EntityUtils.toString(response.getEntity()));
+			if(object.has("error")){
+				JSONObject error = object.getJSONObject("error");
+				if(error.has("code")){
+					int code = error.getInt("code");
+					if(code == 1005){
+						returnMessage = "超过推送长度限制";
+					}else{
+						returnMessage = "错误代码" + code + ",请查看极光推送文档";
+					}
+				}
+			}else{
+				returnMessage = "推送成功";
+			}
+//			System.out.println(EntityUtils.toString(response.getEntity()));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,7 +107,7 @@ public class AppPushService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return returnMessage;
 	}
 	
 	private String getJson(String alert, long newsId){
@@ -107,6 +125,8 @@ public class AppPushService {
 		ios.put("alert", alert);
 		android.put("alert", alert);
 		extras.put("newsId", newsId);
+		extras.put("id", newsId);
+		extras.put("url", localhost + "/app/ios/articledetail/" + newsId);
 		ios.put("extras", extras);
 		android.put("extras", extras);
 		notification.put("ios", ios);
@@ -128,7 +148,7 @@ public class AppPushService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(json);
+//		System.out.println(json);
 		return json;
 	}
 	
