@@ -50,7 +50,7 @@ public class Title {
 		setArticleId(article.getId());
 		setChannel(article.getChannel());
 		setActivity(article.getActivity());
-		setClicks(article.getJs_clicks());
+		setClicks(article.getJs_clicks() > 0 ? article.getJs_clicks() : article.getClicks());
 		setLikes(article.getLikes());
 		if(article.getPictures() > 0){
 			setPictures(article.getPictures());

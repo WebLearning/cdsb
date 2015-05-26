@@ -1,0 +1,63 @@
+.d_date{
+	padding:12px 0px 2px 2px;
+	width:33%;
+	text-align:left-center;
+	color:black;
+	font-size:1em;
+	/*font-family:¿¬Ìå;*/
+	font-weight:500;
+	vertical-align:"text-bottom";
+}
+
+.d_name{
+	padding:8px 0px 8px 0px;
+	width:33%;
+	text-align:center;
+	color:black;
+	font-size:1.8em;
+	/*font-family:¿¬Ìå;*/
+	font-weight:bold;
+}
+
+.d_flag{
+	padding:12px 2px 2px 2px;
+	width:33%;
+	text-align:right;
+	color:black;
+	font-size:1em;
+	/*font-family:¿¬Ìå;*/
+	font-weight:500;
+	valign:"bottom";
+}
+
+
+.d_picture{
+	align=center;
+}
+
+.d_title{
+	margin:5px 5px 5px 10px;
+	/*font-family:黑体;*/
+	color:#FFFFFF;
+	font-size:1em;
+    font-weight:500;
+
+}
+
+.d_content{
+	margin:5px 5px 15px 10px;
+	font-size: 1em;
+	/*font-family: "Times New Roman",Georgia,Serif;*/
+	/*font-family:楷体;*/
+	color:#FFFFFF;
+	
+}
+
+.d_last{
+	width:100%;
+	text-align:center;
+	color:black;
+	font-size:1.3em;
+	font-family:¿¬Ìå;
+	font-weight:500;
+}

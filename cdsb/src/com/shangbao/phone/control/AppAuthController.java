@@ -253,6 +253,7 @@ public class AppAuthController {
 		AppResponseModel appResponseModel = new AppResponseModel();
 		String code = userIdentifyService.identifyUserPhone(phoneNum);
 		if(code != null){
+//			System.out.println(code);
 			request.getSession().setAttribute("PHONE_TEXT", code);
 			request.getSession().setAttribute("PHONE_NUM", phoneNum);
 			appResponseModel.setResultCode(1);
@@ -295,11 +296,17 @@ public class AppAuthController {
 					//表示本地数据库中没有，但是商报的数据库中有
 					User userWithoutPw = userIdentifyService.getRemoteUserWithoutPW(phoneNum);
 					userWithoutPw.setPasswd(passwdModel.getNewPasswd());
-					if(userIdentifyService.updateUser(userWithoutPw)){
+					User updateUser = new User();
+					updateUser.setUid(userWithoutPw.getUid());
+					updateUser.setPasswd(passwdModel.getNewPasswd());
+					if(userIdentifyService.updateUser(updateUser)){
 //						userWithoutPw.setPasswd(passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null));
 //						userServiceImp.addUser(userWithoutPw);
 						appResponseModel.setResultCode(1);
 						appResponseModel.setResultMsg("成功");
+					}else{
+						appResponseModel.setResultCode(0);
+						appResponseModel.setResultMsg("服务器修改失败");
 					}
 				}else{
 					if(userServiceImp.updatePasswd(user, user.getPasswd(), passwordEncoder.encodePassword(passwdModel.getNewPasswd(), null))){

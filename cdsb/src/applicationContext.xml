@@ -107,8 +107,10 @@
 		<task:scheduled ref="downLoadPicServiceImp" method="saveAsArticle"
 			cron="0 0 23 * * ?" />
 		<task:scheduled ref="kuaipaiPKTask" method="findTopArticle"
-			cron="0 55 23 * * ?" />
-		<task:scheduled ref="kuaipaiDSTask" method="newMethod"
+			cron="50 59 23 * * ?" />
+		<!-- <task:scheduled ref="kuaipaiDSTask" method="newMethod"
+			cron="0 05 00 * * ?"/> -->
+		<task:scheduled ref="kuaipaiDSTask" method="newMethod2"
 			cron="0 05 00 * * ?"/>
 		<task:scheduled ref="clickCountServiceImp" method="service"
 			cron="0 02 00 * * ?"/>	

@@ -203,9 +203,6 @@ public class UserIdentifyService {
 			if(user.getPasswd() != null && user.getPasswd() != ""){
 				userMap.add("psw", user.getPasswd());
 			}
-			if(user.getName() != null && user.getName() != ""){
-				userMap.add("nickname", user.getName());
-			}
 			if(user.getAvatar() != null && user.getAvatar() != ""){
 				userMap.add("avatar", user.getAvatar());
 			}
@@ -215,15 +212,15 @@ public class UserIdentifyService {
 			if(user.getSex() == 0 || user.getSex() == 1){
 				userMap.add("sex", user.getSex() + "");
 			}
-			if(user.getBirthday() != null){
-				userMap.add("birthday", user.getBirthday().getTime() / 1000);
-			}
+//			if(user.getBirthday() != null){
+//				userMap.add("birthday", user.getBirthday().getTime() / 1000);
+//			}
 			if(user.getQq() != null){
 				userMap.add("qq", user.getQq());
 			}
-			if(user.getPhone() != null){
-				userMap.add("phone", user.getPhone());
-			}
+//			if(user.getPhone() != null){
+//				userMap.add("phone", user.getPhone());
+//			}
 			String responseUser = restTemplate.postForObject(remoteUrl + "editUser", userMap, String.class);
 //			System.out.println(responseUser);
 			if(responseUser.toCharArray()[14] == '0'){

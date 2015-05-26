@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>***Title***</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width" />
+<script type="text/javascript" src="js/jquery-1.11.0.js"></script>
+<script type="text/javascript" src="js/angular.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/d_pic.css" type="text/css" />
+<script>
+function pictureCtrl($scope,$http) {
+	$scope.titleList={
+		***TimeName***
+	};
+	
+	
+	$scope.pictureData = [
+			***Pictures***
+		];
+}
+</script>
+</head>
+
+<body style="background:black">
+	<div ng-app="" ng-controller="pictureCtrl">
+		<table style="width:100%;height:100%"><thead>
+			<tr style="background:#F0F0F0">
+				<td class="d_date">{{titleList.date}}</td>
+				<td class="d_name">{{titleList.name}}</td>
+				<td class="d_flag">作品集</td>
+			</tr>
+		</thead>
+		</table>	
+		<div ng-repeat="tileObj in pictureData">
+			<div class="d_picture">
+				<img width="100%" src={{tileObj.picUrl}}/>
+			</div>
+			<div class="d_title">{{tileObj.title}}</div>
+			<div class="d_content">{{tileObj.content}}</div>
+		</div>
+		
+		<table style="width:100%;height:100%"><thead>
+			<tr style="background:#F0F0F0;">
+				<td class="d_last">成都商报·快拍 出品</td>
+			</tr>
+		</thead>
+		</table>
+	</div>
+</body>
+</html>

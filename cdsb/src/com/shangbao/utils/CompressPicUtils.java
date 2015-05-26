@@ -87,23 +87,23 @@ public class CompressPicUtils {
 			int newHeight = 0;
 			if(tag){
 				if(outputHeight == 0){
-//					if(outputWidth < img.getWidth(null)){
+					if(outputWidth < img.getWidth(null)){
 						double rate = ((double) img.getWidth(null)) / (double) outputWidth;
 						newWidth = (int) (img.getWidth(null) / rate);
 						newHeight = (int) (img.getHeight(null) / rate);
-//					}else{
-//						newWidth = img.getWidth(null);
-//						newHeight = img.getHeight(null);
-//					}
+					}else{
+						newWidth = img.getWidth(null);
+						newHeight = img.getHeight(null);
+					}
 				}else if(outputWidth == 0){
-//					if(outputHeight < img.getHeight(null)){
+					if(outputHeight < img.getHeight(null)){
 						double rate = ((double) img.getHeight(null)) / (double) outputHeight;
 						newWidth = (int) (img.getWidth(null) / rate);
 						newHeight = (int) (img.getHeight(null) / rate);
-//					}else{
-//						newWidth = img.getWidth(null);
-//						newHeight = img.getHeight(null);
-//					}
+					}else{
+						newWidth = img.getWidth(null);
+						newHeight = img.getHeight(null);
+					}
 				}else{
 					double rate1 = ((double) img.getWidth(null)) / (double) outputWidth;
 					double rate2 = ((double) img.getHeight(null)) / (double) outputHeight;

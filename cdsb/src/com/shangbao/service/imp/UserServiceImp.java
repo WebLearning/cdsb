@@ -109,7 +109,11 @@ public class UserServiceImp implements UserService {
 			Update update = new Update();
 			update.set("passwd", newPasswd);
 //			userDaoImp.save(user);
-			userDaoImp.findAndModify(user, update);
+			User tempUser = new User();
+			tempUser.setId(criteriaUser.getId());
+			tempUser.setUid(user.getUid());
+			tempUser.setName(user.getName());
+			User returnUser = userDaoImp.findAndModify(tempUser, update);
 			return true;
 		}
 		return false;

@@ -489,9 +489,9 @@ public class AppController {
 				fos.close();
 				
 				//压缩800*？
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 1080, 0, 1.0, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlMid + File.separator + fileNameString), 1080, 0, 0.8, true);
 				//压缩200 * 150
-				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 400, 300, 1.0, true);
+				compressPicUtils.compressByThumbnailator(new File(fileURL + File.separator + fileNameString), new File(fileUrlSim + File.separator + fileNameString), 400, 300, 0.8, true);
 				
 				returnPath = path.toString().split("cdsb")[1] + File.separator + "mid" + File.separator + fileNameString;
 //				System.out.println(returnPath);

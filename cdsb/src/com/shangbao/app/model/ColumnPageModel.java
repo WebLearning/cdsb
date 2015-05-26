@@ -1,8 +1,12 @@
 package com.shangbao.app.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.shangbao.model.persistence.Article;
 
@@ -10,6 +14,21 @@ public class ColumnPageModel {
 	private int PageCount;//页数
 	private int currentNo;//当前页码
 	private List<NewsTitle> content = new ArrayList<NewsTitle>();
+	
+	private static String qiniu = "http://7xj9jv.com2.z0.glb.qiniucdn.com";
+	
+	static{
+		Properties props;
+		try {
+			props = PropertiesLoaderUtils.loadAllProperties("config.properties");
+			if(props.getProperty("qiniu") != null && props.getProperty("qiniu") != ""){
+				qiniu = props.getProperty("qiniu");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public int getPageCount() {
 		return PageCount;
@@ -70,7 +89,10 @@ public class ColumnPageModel {
 //					picUrl.add(newUrl);
 					//System.out.println(article.getTitle() + "  " + article.isTag() + " "  + url);
 //					midPicUrl.add(url);
-					if(url.substring(url.lastIndexOf("/") - 3, url.lastIndexOf("/")).equals("mid")){
+					if(url.contains("/mid/")){
+						if(qiniu != null && qiniu != "" && url.contains("/cdsb/")){
+							url = qiniu + url.substring(url.indexOf("/cdsb/"));
+						}
 						midPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 						simPicUrl.add(url.replaceAll("/mid/", "/sim/"));
 					}

@@ -1,5 +1,5 @@
 function readAndZanCtrl($scope, $http) {
-	$scope.visible = false;		
+	$scope.visible = true;		
 	// 通过解析当前url获取articleID
 	$scope.url = {
 		value : window.location.href,

@@ -1,6 +1,7 @@
 package com.shangbao.model.show;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.shangbao.model.persistence.ClickCount;
@@ -45,6 +46,7 @@ public class ClickList {
 	class ClickInfo{
 		private String articleTitle;
 		private long articleId;
+		private Date time;
 		private long dayAppClick;
 		private long dayOutClick;
 		private long dayUdidClick;
@@ -57,6 +59,7 @@ public class ClickList {
 		
 		public ClickInfo(ClickCount clickCount){
 			articleTitle = clickCount.getArticleTitle();
+			time = clickCount.getFirstTime();
 			articleId = clickCount.getArticleId();
 			dayAppClick = clickCount.getDayAppClick();
 			dayOutClick = clickCount.getDayOutClick();
@@ -74,6 +77,12 @@ public class ClickList {
 		}
 		public void setArticleTitle(String articleTitle) {
 			this.articleTitle = articleTitle;
+		}
+		public Date getTime() {
+			return time;
+		}
+		public void setTime(Date time) {
+			this.time = time;
 		}
 		public long getArticleId() {
 			return articleId;

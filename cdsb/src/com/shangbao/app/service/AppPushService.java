@@ -125,13 +125,13 @@ public class AppPushService {
 		ios.put("alert", alert);
 		android.put("alert", alert);
 		extras.put("newsId", newsId);
-		extras.put("id", newsId);
+		extras.put("ID", newsId);
 		extras.put("url", localhost + "/app/ios/articledetail/" + newsId);
 		ios.put("extras", extras);
 		android.put("extras", extras);
 		notification.put("ios", ios);
 		notification.put("android", android);
-		options.put("apns_production", false);
+		options.put("apns_production", true);
 		
 		map.put("notification", notification);
 		map.put("options", options);

@@ -44,10 +44,12 @@ public class AppService {
 	private final String appUrlPrefix = "/{phoneType}/";
 	private String localhost;
 	private String salt;
+	private String qiniu;
 	
 	public AppService(){
 		localhost = "http://www.cdsb.mobi/";
 		salt = "cdsbbsdc123321";
+		qiniu = "http://7xj9jv.com2.z0.glb.qiniucdn.com";
 		Properties props;
 		try {
 			props = PropertiesLoaderUtils.loadAllProperties("config.properties");
@@ -56,6 +58,9 @@ public class AppService {
 			}
 			if(props.getProperty("salt") != null && props.getProperty("salt") != ""){
 				salt = props.getProperty("salt");
+			}
+			if(props.getProperty("qiniu") != null && props.getProperty("qiniu") != ""){
+				qiniu = props.getProperty("qiniu");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -586,7 +591,7 @@ public class AppService {
 //				css = "kuaipai.css";
 //			}
 			SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd");
-			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div ng-show=\"visible\" style=\"position:fixed; z-index:10000;width: 99.5%;height: 60px;top:0px\"><a href=\"http://app.cdsb.com/download.php\"><div style=\"width: 100%;height: 60px;float: left; background:#EA0000;color:#FFFFFF;float: left; text-align:left; line-height:48px;\"><div style=\"margin: 8px 20px;;float: left;\"><span style=\"display:block; font-size:30px; text-align:left; font-family: Helvetica\"><b>成都商报</b></span></div><div style=\"margin: 9px 11px;float: right; background:#EA0000; color:#FFFFFF;text-align:center;\"><span style=\"line-height:22px; display:block;  font-size:20px;\">立即<br/>下载</span></div></div></a></div><div ng-show=\"visible\"><br/><br/><br/><br/></div>";
+			String duxq = "<div ng-app=\"\" ng-controller=\"readAndZanCtrl\"><div data-ng-init=\"load()\"></div><div ng-show=\"visible\" style=\"position:fixed; z-index:10000;width: 99.5%;height: 60px;top:0px\"><a href=\"http://app.cdsb.com/download.php\"><div style=\"width: 100%;height: 50px;float: left; background:#E0E0E0;color:#000000;float: left; text-align:left; line-height:48px;\"><div style=\"margin: 5px 5px 5px 20px;;float: left;\"><img src=\"../../../WEB-SRC/icon.png\" width=\"40\" height=\"40\" /></div><span style=\"line-height:12px; float: left; margin: 20px 20px 25px 0px;  font-size:14px;\">扎根成都的客户端</span><div style=\"margin: 15px 20px;float: right; background:#E0E0E0; color:#000000;text-align:center;\"><span style=\"line-height:12px; display:block;  font-size:10px;\">立即<br>下载</span></div></div></a></div><div ng-show=\"visible\"><br> <br> <br> <br></div>";
 			String duxq2 = "<div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-CN\"><head profile=\"http://gmpg.org/xfn/11\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width\" /> <title>");
@@ -626,7 +631,13 @@ public class AppService {
 			if(!src.toString().contains(localhost)){
 				continue;
 			}
-			StringBuilder replaceString = new StringBuilder("<a href=" + src + ">" + img + "</a>");
+			StringBuilder replaceString = null;
+			if(src.toString().contains("/cdsb/") && qiniu != null && qiniu != ""){
+				StringBuilder newImg = new StringBuilder(img.toString().replace(src.toString(), "\"" + qiniu + src.substring(src.indexOf("/cdsb/"))));
+				replaceString = new StringBuilder("<a href=" + src + ">" + newImg.toString() + "</a>");
+			}else{
+				replaceString = new StringBuilder("<a href=" + src + ">" + img.toString() + "</a>");
+			}
 			content = content.replace(img, replaceString);
 		}
 		return content;
