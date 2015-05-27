@@ -440,6 +440,16 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
             $scope.clickPaginationConf.totalItems=(($scope.latClickPageData.pageCount)-1)*20+$scope.lastClickPageDataLength;
         });
     };
+    $scope.dateStringToDateInClick=function(dateStr)
+    {
+        if(dateStr==null||dateStr==""){
+            return "无";
+        }else{
+//            return new Date(parseInt(dateStr)*1000).toLocaleString().replace(/年|月/g,"-").replace(/日/g," ");
+            var date=new Date(dateStr);
+            return $scope.formatDate(date);
+        }
+    };
 //（1）获取爬虫数据-----------------------------------------------------------------------------------------------------
     $scope.crawlerData=null;
     $scope.crawlerSearchData={
