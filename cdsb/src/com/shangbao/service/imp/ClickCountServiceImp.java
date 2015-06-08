@@ -3,6 +3,7 @@ package com.shangbao.service.imp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -158,6 +159,8 @@ public class ClickCountServiceImp implements ClickCountService{
 	public ClickList getList(int pageNo) {
 		Query query = new Query();
 		query.with(new Sort(Direction.DESC, "firstTime"));
+		Pattern pattern = Pattern.compile("^((?! 商报网友|\\d的图集).)*$");
+		query.addCriteria(Criteria.where("articleTitle").regex(pattern));
 		Page<ClickCount> page = clickCountDaoImp.getPage(pageNo, 20, query);
 		ClickList list = new ClickList();
 		list.setCurrentNo(pageNo);

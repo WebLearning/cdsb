@@ -207,6 +207,18 @@ public class ArticleDaoImp implements ArticleDao {
 				}
 			}
 		}
+		Article tempArticle = mongoTemplate.findById(article.getId(), Article.class);
+		if(tempArticle != null){
+			article.setJs_clicks(tempArticle.getJs_clicks());
+			article.setClicks(tempArticle.getClicks());
+			article.setLikes(tempArticle.getLikes());
+			article.setNewsCommends(tempArticle.getNewsCommends());
+			article.setNewsCommendsPublish(tempArticle.getNewsCommendsPublish());
+			article.setNewsCommendsUnpublish(tempArticle.getNewsCommendsUnpublish());
+			article.setCrawlerCommends(tempArticle.getCrawlerCommends());
+			article.setCrawlerCommendsPublish(tempArticle.getCrawlerCommendsPublish());
+			article.setCrawlerCommendsUnpublish(tempArticle.getCrawlerCommendsUnpublish());
+		}
 		mongoTemplate.save(article);
 	}
 	

@@ -253,19 +253,52 @@ public class CommendServiceImp implements CommendService {
 			commendDaoImp.update(commend, query, updateElement);
 			commendCount ++;
 		}
-		Article article = new Article();
-		article.setId(commend.getArticleId());
-		List<Article> articles = articleDaoImp.find(article);
-		if(articles != null && !articles.isEmpty()){
-			Update update = new Update();
-			if(commend instanceof CrawlerCommend){
-				update.inc("crawlerCommendsPublish", commendCount);
-				update.inc("crawlerCommendsUnpublish", -commendCount);
+//		Article article = new Article();
+//		article.setId(commend.getArticleId());
+//		List<Article> articles = articleDaoImp.find(article);
+//		if(articles != null && !articles.isEmpty() && commendCount != 0){
+//			Update update = new Update();
+//			if(commend instanceof CrawlerCommend){
+//				update.inc("crawlerCommendsPublish", commendCount);
+//				update.inc("crawlerCommendsUnpublish", -commendCount);
+//			}else{
+//				update.inc("newsCommendsPublish", commendCount);
+//				update.inc("newsCommendsUnpublish", -commendCount);
+//			}
+//			articleDaoImp.update(article, update);
+//		}
+		int totalCount = 0;
+		int published = 0;
+		List<Commend> commendList = commendDaoImp.find(commend);
+		if(!commendList.isEmpty() && commendList != null){
+			if(commendList.get(0).getCommendList().isEmpty()){
+				
 			}else{
-				update.inc("newsCommendsPublish", commendCount);
-				update.inc("newsCommendsUnpublish", -commendCount);
+				for(SingleCommend singleCommend : commendList.get(0).getCommendList()){
+					if(singleCommend.getState().equals(CommendState.published)){
+						totalCount ++;
+						published ++;
+					}else{
+						totalCount ++;
+					}
+				}
 			}
-			articleDaoImp.update(article, update);
+			Article article = new Article();
+			article.setId(commend.getArticleId());
+			List<Article> articles = articleDaoImp.find(article);
+			if(articles != null && !articles.isEmpty()){
+				Update update = new Update();
+				if(commend instanceof CrawlerCommend){
+					update.set("crawlerCommendsPublish", published);
+					update.set("crawlerCommends", totalCount);
+					update.set("crawlerCommendsUnpublish", totalCount - published);
+				}else{
+					update.set("newsCommendsPublish", published);
+					update.set("newsCommends", totalCount);
+					update.set("newsCommendsUnpublish", totalCount - published);
+				}
+				articleDaoImp.update(article, update);
+			}
 		}
 	}
 

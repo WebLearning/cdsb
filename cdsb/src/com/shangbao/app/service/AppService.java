@@ -26,6 +26,7 @@ import com.shangbao.app.model.CdsbModel;
 import com.shangbao.app.model.ColumnPageModel;
 import com.shangbao.app.model.FrontPageModel;
 import com.shangbao.dao.ArticleDao;
+import com.shangbao.model.ArticleState;
 import com.shangbao.model.persistence.Article;
 import com.shangbao.model.persistence.Channel;
 import com.shangbao.model.show.Page;
@@ -225,7 +226,7 @@ public class AppService {
 				appHtml.articleId = articleId;
 			}else{
 				Article articleInMongo = articleServiceImp.findOne(articleId);
-				if(articleInMongo != null){
+				if(articleInMongo != null && !articleInMongo.getState().equals(ArticleState.Deleted) && !articleInMongo.getState().equals(ArticleState.Revocation)){
 					//appModel.getArticleMap().put(articleId, articleInMongo);
 					//appHtml.html = articleInMongo.getContent();
 					appHtml.html = articleToHtml(articleInMongo, udid, uid);
@@ -312,6 +313,17 @@ public class AppService {
 			}
 		}
 		return model;
+	}
+	
+	public List<Article> getXMLArticles(int num){
+		List<Article> articles = new ArrayList<>();
+		List<Article> sbArticles = appModel.getSbArticles();
+		if(sbArticles != null && !sbArticles.isEmpty()){
+			for(int i = 0; i < num && i < sbArticles.size(); i ++){
+				articles.add(sbArticles.get(i));
+			}
+		}
+		return articles;
 	}
 	
 	public int addJsClick(Long articleId, String fromIp, String udid){
@@ -595,7 +607,7 @@ public class AppService {
 			String duxq2 = "<div class=\"single-post-meta-top\">阅读{{clickNum}} &nbsp;&nbsp;&nbsp;&nbsp;<a ng-click=\"zanAdd(zanNum,pictureUrl)\"><img alt=\"\" src={{pictureUrl}}>{{zanNum}}</a></div></div>";
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"zh-CN\"><head profile=\"http://gmpg.org/xfn/11\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width\" /> <title>");
-			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报新闻客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script>");
+			html.append(article.getTitle().replace("\\n", "") +"  | 成都商报客户端</title>" + "<link rel=\"stylesheet\" href=\"" + localhostString + "/WEB-SRC/" + css + "\" type=\"text/css\" /> <script src=\"" + localhostString + "/WEB-SRC/src/js/angular.min.js\"></script> <script src=\"" + localhostString + "/WEB-SRC/click.js\"></script>");
 			html.append("<link href=\" " + localhostString +  "/WEB-SRC/videojs/video-js.css\" rel = \"stylesheet\" type=\"text/css\"><script src = \" " + localhostString + "/WEB-SRC/videojs/video.js\"></script><script>videojs.options.flash.swf = \" " + localhostString + "/WEB-SRC/videojs/video-js.swf\";</script>");//vedio-js
 			html.append("</head><body class=\"classic-wptouch-bg\"> " + duxq +  " <input type=\"hidden\" name=\"id\" value=" + article.getId() + "/> <div class=\"content single\"> <div class=\"post\"> <a class=\"sh2\">");
 			html.append(article.getTitle().replace("\\n", "<br/>") + "</a><div style=\"font-size:15px; padding: 5px 0;\"></div><div class=\"single-post-meta-top\">");
@@ -668,7 +680,7 @@ public class AppService {
 	}
 	
 	public class AppHtml{
-		public String html;
+		public String html = "<html><head><title></title></head><body><script language=\"javascript\">document.location = \"http://app.cdsb.com/download.php\"</script></body></html>";
 		public Long articleId;
 	}
 }

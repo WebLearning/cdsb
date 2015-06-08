@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -27,6 +29,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.JavaScriptUtils;
 
 import com.shangbao.dao.ArticleDao;
 import com.shangbao.dao.ChannelDao;
@@ -331,14 +334,23 @@ public class KuaipaiDSTask {
 				if(singlePics != null && !singlePics.isEmpty()){
 					for(String singlePicUrl : singlePics){
 						article.addPicture(singlePicUrl);
-						picturesDiv.append("{picUrl:\"" + singlePicUrl + "\",title:\"" + singleArticle.getTitle() + "\",content:\"" + singleArticle.getSummary() + "\"},");
+//						Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+//						Matcher matcher=pattern.matcher(singleArticle.getSummary());
+//						String content = matcher.replaceAll("\\n");
+//						content = content.replaceAll("\"", "\\\"");
+//						content = content.replaceAll("\\", "\\\\");
+						String content = JavaScriptUtils.javaScriptEscape(singleArticle.getSummary());
+						picturesDiv.append("{picUrl:\"" + singlePicUrl + "\",title:\"" + singleArticle.getTitle() + "\",content:\"" + content + "\"},");
 					}
 				}
 			}
 			int start3 = outLine.indexOf("***Pictures***");
 			int end3 = start3 + 14;
 			outLine = outLine.replace(start3, end3, picturesDiv.toString());
-			File file = new File(".." + File.separator + "webapps" + File.separator + "cdsb" + File.separator + "WEB-SRC" + File.separator + "pictureset" + File.separator + article.getTitle() + ".html");
+			Pattern pattern = Pattern.compile("( |>|<|\\\\|\\/|\\?|\\||:)");
+			Matcher matcher = pattern.matcher(article.getTitle());
+			String fileNameString = matcher.replaceAll("_");
+			File file = new File(".." + File.separator + "webapps" + File.separator + "cdsb" + File.separator + "WEB-SRC" + File.separator + "pictureset" + File.separator + fileNameString + ".html");
 			if(Files.notExists(file.toPath())){
 				try {
 					Files.createFile(file.toPath());

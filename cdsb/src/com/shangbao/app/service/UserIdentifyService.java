@@ -240,7 +240,7 @@ public class UserIdentifyService {
 		try {
 			mapper.enableDefaultTyping();
 			ResponseModel model = mapper.readValue(result, ResponseModel.class);
-			System.out.println(model.getData().getAvatar());
+//			System.out.println(model.getData().getAvatar());
 			if(model.getResultMsg().equals("userExist fail")){
 				return false;
 			}else{

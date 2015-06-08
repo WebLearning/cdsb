@@ -645,7 +645,8 @@ public class AppModel {
 				synchronized (AppModel.class) {
 					articleMap.get(articleId).setLikes(articleMap.get(articleId).getLikes() + 1);
 				}
-				update.set("likes", articleMap.get(articleId).getLikes());
+//				update.set("likes", articleMap.get(articleId).getLikes());
+				update.inc("likes", 1);
 				articleDaoImp.update(criteriaArticle, update);
 				return articleMap.get(articleId).getLikes();
 			}
@@ -682,14 +683,15 @@ public class AppModel {
 				synchronized (AppModel.class) {
 					articleMap.get(articleId).setClicks(articleMap.get(articleId).getClicks() + 1);
 				}
-				update.set("clicks", articleMap.get(articleId).getClicks());
+//				update.set("clicks", articleMap.get(articleId).getClicks());
+				update.inc("clicks", 1);
 				articleDaoImp.update(criteriaArticle, update);
 			}
 		}finally{
 			articleMapLock.readLock().unlock();
 		}
 		if(article != null){
-			clickCountServiceImp.add(article.getId(), article.getTitle(), new Date());
+			clickCountServiceImp.add(article.getId(), article.getTitle() + " " + (article.getFrom() == null ? "":article.getFrom()), new Date());
 			clickServiceImp.add(article.getId(), fromIp, null, true);
 		}
 	}
@@ -705,11 +707,12 @@ public class AppModel {
 				synchronized (this){
 					articleMap.get(articleId).setJs_clicks(articleMap.get(articleId).getJs_clicks() + 1);
 				}
-				update.set("js_clicks", articleMap.get(articleId).getJs_clicks());
+//				update.set("js_clicks", articleMap.get(articleId).getJs_clicks());
+				update.inc("js_clicks", 1);
 				articleDaoImp.update(criteriaArticle, update);
 				//return article.getJs_clicks() * 100 + (int)((new Date().getTime() - article.getTime().getTime())/60000);
 				if(article != null){
-					clickCountServiceImp.add(article.getId(), article.getTitle(), new Date());
+					clickCountServiceImp.add(article.getId(), article.getTitle() + " " + (article.getFrom() == null ? "":article.getFrom()), new Date());
 					clickServiceImp.add(article.getId(), fromIp, udid, false);
 				}
 				return articleMap.get(articleId).getJs_clicks();
