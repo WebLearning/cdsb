@@ -1928,7 +1928,7 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
     };
 //    $scope.getNormalChannelNames();
     $scope.getNewChannelNames=function(){
-        if($scope.userInfo_duty=="super"){
+        if($scope.userInfo_duty=="super"||$scope.userInfo_duty=="night"){
 //            $scope.getSuperChannelNames();
             $scope.newChannelNames=$scope.superChannelNames;
         }else{
@@ -2113,6 +2113,15 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
             }else{
                 if($scope.addUserInfo.pendTag==""){
                     alert("请选择审核权限！");
+                }else if($scope.addUserInfo.duty=="夜班编辑"){
+                    $scope.addUserInfo.duty="night";
+                    $http.post(url,$scope.addUserInfo).success(function(){
+                        alert("注册成功！");
+                        $scope.clearUserInfo();
+//                    $scope.addUserInfo.name="";
+//                    $scope.addUserInfo.pendTag="";
+                        $('#addUser_1').modal('toggle');
+                    });
                 }else{
                     for(var i=0;i<$scope.userDuty.length;i++){
                         if(($scope.userDuty)[i].channelName==$scope.addUserInfo.duty){
