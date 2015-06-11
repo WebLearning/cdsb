@@ -35,6 +35,20 @@ angular.module("Dashboard").controller("publishedArticleCtrl", ["$scope","$http"
             iFrameElem2.src=outSideUrl;
         }
     };
+    $scope.setCurArtUrlVisible=function(outSideUrl){
+        if(outSideUrl==""||outSideUrl==null){
+            return "form-group";
+        }else if((outSideUrl!="")||(outSideUrl!=null)){
+            return "sr-only";
+        }
+    };
+    //复制文章地址
+    $scope.copyCurArtUrl=function(){
+        var inputCurArtUrl=document.getElementById("curArtUrl");
+        inputCurArtUrl.select();
+        document.execCommand("Copy");
+//        alert("复制成功！");
+    };
     $scope.backCurPublished=function(){
         if($scope.publishedSearchData.content==""||$scope.publishedSearchData.content==null){
             $scope.getPublishedData($scope.publishedData.currentNo);

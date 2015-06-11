@@ -68,6 +68,8 @@ angular.module("Dashboard").controller("publishedCtrl",["$scope","$http",functio
         document.getElementById("published").className="tab-pane";
         document.getElementById("publishedArticle").className="tab-pane active";
         document.getElementById("publishedSidebarID").className="sidebar-list";
+//        $scope.curArticleUrl=$scope.projectName+"/app/ios/articledetail/"+articleId;
+//        console.log($scope.curArticleUrl);
         if($scope.articleData!={}){
             $scope.closeOver();
         }
@@ -108,6 +110,8 @@ angular.module("Dashboard").controller("publishedCtrl",["$scope","$http",functio
         $http.get(url).success(function(data) {
             $scope.transDataToArticleData(data);
         });
+
+        $scope.transPubArtUrl(articleId);
 //        $scope.closeOver();
 //        setTimeout($scope.closeOver(),10000);
     };

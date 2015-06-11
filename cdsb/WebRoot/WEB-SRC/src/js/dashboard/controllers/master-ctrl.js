@@ -83,6 +83,15 @@ angular.module("Dashboard", ["ng.ueditor","tm.pagination"]).controller("MasterCt
         words: null,
         pictures:null
     };
+    //在发布文章中显示本文地址------------------------------------------------------------------------------------------
+    $scope.curArticleUrl="";
+    $scope.curPicArticleUrl="";
+    $scope.transPubArtUrl=function(id){
+        $scope.curArticleUrl=$scope.projectName+"/app/ios/articledetail/"+id;
+    };
+    $scope.transPicPubArtUrl=function(id){
+        $scope.curPicArticleUrl=$scope.projectName+"/app/ios/articledetail/"+id;
+    };
     //显示当前登录用户名------------------------------------------------------------------------------------------------
     $scope.userInfo_name="";
     $scope.userInfo_duty="";

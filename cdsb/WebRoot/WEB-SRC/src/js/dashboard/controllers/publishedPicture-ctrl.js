@@ -103,6 +103,7 @@ angular.module("Dashboard").controller("publishedPictureCtrl",["$scope","$http",
         $http.get(url).success(function(data) {
             $scope.transDataToArticleData(data);
         });
+        $scope.transPicPubArtUrl(articleId);
     };
 
     //排序(作者，评论数等）---------------------------------------------------------------------------------------------------------------
